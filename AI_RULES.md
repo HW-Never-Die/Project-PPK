@@ -46,15 +46,8 @@
 
 ## 4. Git & Version Control
 
-### 4.1 Jangan Push Dokumen Acuan
-File-file berikut **TIDAK BOLEH** di-push ke repository:
-- `PRD.md`
-- `DESIGN.md`
-- `AI_RULES.md`
-- `PLANNING.md`
-- `AGENTS.md` (jika ada)
-
-File-file ini sudah ditambahkan ke `.gitignore`.
+### 4.1 Dokumen Acuan
+File dokumen acuan (`PRD.md`, `DESIGN.md`, `AI_RULES.md`, `PLANNING.md`, `COMMIT_CONVENTION.md`) **ikut di-push** ke repository agar semua anggota tim dan AI agent bisa mengaksesnya. Jangan hapus atau rename file-file ini tanpa konfirmasi user.
 
 ### 4.2 Commit
 - Jangan commit kecuali user secara eksplisit meminta.
