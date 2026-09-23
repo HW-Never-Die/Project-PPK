@@ -1,7 +1,14 @@
+export const OPERATING_HOURS = {
+  start: 7,
+  end: 20,
+} as const;
+
 export const OPERATIONAL_HOURS = {
   start: "07:00",
   end: "20:00",
 } as const;
+
+export const SLOT_DURATION_MINUTES = 30;
 
 export interface TimeSlot {
   id: string; // e.g. "07:00-07:30"
@@ -40,3 +47,63 @@ export const TIME_SLOTS: TimeSlot[] = [
   { id: "19:00-19:30", startTime: "19:00", endTime: "19:30", label: "19:00 - 19:30", startMinutes: 1140, endMinutes: 1170 },
   { id: "19:30-20:00", startTime: "19:30", endTime: "20:00", label: "19:30 - 20:00", startMinutes: 1170, endMinutes: 1200 },
 ];
+
+export const TIME_SLOT_STRINGS: string[] = TIME_SLOTS.map((s) => s.startTime);
+
+export const SLOT_END_TIMES: string[] = [
+  ...TIME_SLOT_STRINGS.slice(1),
+  "20:00",
+];
+
+export const ROLE_LABELS: Record<string, string> = {
+  admin: "Admin",
+  petugas: "Petugas",
+  pengguna: "Pengguna",
+};
+
+export const USER_STATUS_LABELS: Record<string, string> = {
+  pending: "Menunggu Verifikasi",
+  verified: "Terverifikasi",
+  rejected: "Ditolak",
+};
+
+export const FACILITY_TYPE_LABELS: Record<string, string> = {
+  ruang_kelas: "Ruang Kelas",
+  aula: "Aula",
+  laboratorium: "Laboratorium",
+  alat: "Alat",
+  lapangan: "Lapangan",
+};
+
+export const FACILITY_STATUS_LABELS: Record<string, string> = {
+  active: "Aktif",
+  maintenance: "Dalam Perbaikan",
+  inactive: "Nonaktif",
+};
+
+export const RESERVATION_STATUS_LABELS: Record<string, string> = {
+  pending: "Menunggu",
+  approved: "Disetujui",
+  rejected: "Ditolak",
+  cancelled: "Dibatalkan",
+};
+
+export const REPORT_CATEGORY_LABELS: Record<string, string> = {
+  kerusakan: "Kerusakan",
+  kebersihan: "Kebersihan",
+  keamanan: "Keamanan",
+  lainnya: "Lainnya",
+};
+
+export const REPORT_STATUS_LABELS: Record<string, string> = {
+  new: "Baru",
+  in_progress: "Sedang Ditangani",
+  resolved: "Selesai",
+  rejected: "Ditolak",
+};
+
+export const ROLE_DEFAULT_ROUTES: Record<string, string> = {
+  admin: "/admin/users",
+  petugas: "/petugas",
+  pengguna: "/pengguna/reservasi",
+};
