@@ -15,10 +15,19 @@ export default function FacilityCard({
   facility,
   onCheckAvailability,
 }: FacilityCardProps) {
+  // Fallback gambar seragam sesuai tipe jika kosong atau tidak valid
+  const defaultImages: Record<string, string> = {
+    ruang_kelas: "/images/facilities/ruang-kelas.webp",
+    laboratorium: "/images/facilities/lab-komputer.webp",
+    aula: "/images/facilities/aula.webp",
+    lapangan: "/images/facilities/lapangan-basket.webp",
+    alat: "/images/facilities/no-image.webp",
+  };
+
   const imageSrc =
     facility.imageUrl && facility.imageUrl.trim() !== ""
       ? facility.imageUrl
-      : "/images/facilities/no-image.webp";
+      : defaultImages[facility.type] || "/images/facilities/no-image.webp";
 
   return (
     <div className="bg-white border border-[#bfc1b7] rounded-[4px] overflow-hidden flex flex-col justify-between hover:border-[#111827] transition-colors">
