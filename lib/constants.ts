@@ -103,7 +103,7 @@ export const REPORT_STATUS_LABELS: Record<string, string> = {
 };
 
 export const ROLE_DEFAULT_ROUTES: Record<string, string> = {
-  admin: "/admin/users",
+  admin: "/admin",
   petugas: "/petugas",
-  pengguna: "/pengguna/reservasi",
+  pengguna: "/pengguna",
 };

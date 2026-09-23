@@ -44,7 +44,7 @@ export async function middleware(request: NextRequest) {
           ? "/admin"
           : user.role === "petugas"
             ? "/petugas"
-            : "/pengguna/laporan";
+            : "/pengguna";
       return NextResponse.redirect(new URL(defaultRoute, request.url));
     }
   }
@@ -69,7 +69,7 @@ export async function middleware(request: NextRequest) {
             ? "/admin"
             : user.role === "petugas"
               ? "/petugas"
-              : "/pengguna/laporan";
+              : "/pengguna";
         return NextResponse.redirect(new URL(defaultRoute, request.url));
       }
     }
