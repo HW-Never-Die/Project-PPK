@@ -81,26 +81,26 @@ main          ← Production / presentasi demo (hanya di-merge dari dev)
 **Fokus:** Eksplorasi fasilitas publik, kalender ketersediaan, manajemen fasilitas oleh admin, serta landing page sistem (menggantikan boilerplate Next.js).
 
 #### Backend & Logika:
-- [ ] `lib/validations/facility.ts`: Skema validasi Zod untuk data fasilitas
-- [ ] API `GET /api/facilities`: Katalog fasilitas publik dengan filter tipe, lokasi, dan kapasitas
-- [ ] API `GET /api/facilities/[id]`: Detail informasi spesifik fasilitas
-- [ ] API `GET /api/facilities/[id]/availability?date=YYYY-MM-DD`: Cek daftar 26 slot waktu (07:00–20:00) yang terisi vs kosong
-- [ ] API `POST /api/facilities`: Admin membuat fasilitas baru
-- [ ] API `PUT /api/facilities/[id]`: Admin memperbarui detail fasilitas
-- [ ] API `PATCH /api/facilities/[id]`: Update status fasilitas (`active`, `maintenance`, `inactive`)
+- [x] `lib/validations/facility.ts`: Skema validasi Zod untuk data fasilitas
+- [x] API `GET /api/facilities`: Katalog fasilitas publik dengan filter tipe, lokasi, dan kapasitas
+- [x] API `GET /api/facilities/[id]`: Detail informasi spesifik fasilitas
+- [x] API `GET /api/facilities/[id]/availability?date=YYYY-MM-DD`: Cek daftar 26 slot waktu (07:00–20:00) yang terisi vs kosong
+- [x] API `POST /api/facilities`: Admin membuat fasilitas baru
+- [x] API `PUT /api/facilities/[id]`: Admin memperbarui detail fasilitas
+- [x] API `PATCH /api/facilities/[id]`: Update status fasilitas (`active`, `maintenance`, `inactive`)
 
 #### Frontend & UI:
-- [ ] **Landing Page (`app/page.tsx`)**:
+- [x] **Landing Page (`app/page.tsx`)**:
   - Hapus dan rombak total boilerplate default Vercel/Next.js
   - Implementasikan Hero section PostHog (Sandy Desk canvas `#e1d7c2`, Paper White window `#ffffff`, hairline border `1px solid #bfc1b7`)
   - Primary Amber CTA "Lihat Fasilitas" & Outlined Gold "Login"
-- [ ] Komponen `FacilityCard.tsx`: Menampilkan foto, kapasitas, tipe, dan status fasilitas
-- [ ] Komponen `FacilityFilter.tsx`: Search bar dan filter tipe/lokasi/kapasitas
-- [ ] Komponen `SlotGrid.tsx`: Visual matrix 26 slot (30 menit) menampilkan status ketersediaan tanpa ekspos data pemohon
-- [ ] Halaman Publik Fasilitas (`app/(public)/facilities/page.tsx`):
+- [x] Komponen `FacilityCard.tsx`: Menampilkan foto, kapasitas, tipe, dan status fasilitas
+- [x] Komponen `FacilityFilter.tsx`: Search bar dan filter tipe/lokasi/kapasitas
+- [x] Komponen `SlotGrid.tsx`: Visual matrix 26 slot (30 menit) menampilkan status ketersediaan tanpa ekspos data pemohon
+- [x] Halaman Publik Fasilitas (`app/(public)/facilities/page.tsx`):
   - Grid daftar fasilitas + integrasi filter & pencarian
   - Modal / drawer ketersediaan slot per tanggal
-- [ ] Halaman Admin Fasilitas (`app/(dashboard)/admin/fasilitas/page.tsx`):
+- [x] Halaman Admin Fasilitas (`app/(dashboard)/admin/fasilitas/page.tsx`):
   - Tabel master data fasilitas
   - Form modal tambah & edit fasilitas
   - Aksi nonaktifkan / aktifkan fasilitas
@@ -173,6 +173,6 @@ main          ← Production / presentasi demo (hanya di-merge dari dev)
 | Anggota | Domain Utama | Status Branch | Test & Lint | Selesai |
 |---|---|---|---|---|
 | **Zaidan** | Shared Foundation, Auth & User Management | `feat/auth-foundation` | ⬜ Belum | ⬜ 0% |
-| **Dewa** | Fasilitas & Landing Page | `feat/facilities` | ⬜ Belum | ⬜ 0% |
+| **Dewa** | Fasilitas & Landing Page | `feat/facilities` | ✅ Lolos | ✅ 100% |
 | **Moses** | Sistem Reservasi | `feat/reservations` | ⬜ Belum | ⬜ 0% |
 | **Sulthon** | Laporan, Dashboard, Export | `feat/reports-admin` | ⬜ Belum | ⬜ 0% |

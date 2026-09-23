@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useState, useEffect } from "react";
 import ReportTable from "@/components/reports/ReportTable";
 
 interface Report {
@@ -24,15 +24,27 @@ export default function PetugasLaporanPage() {
   const [notes, setNotes] = useState("");
   const [saving, setSaving] = useState(false);
 
-  const load = useCallback(() => {
-    setLoading(true);
+  const [reloadKey, setReloadKey] = useState(0);
+
+  useEffect(() => {
+    let ignore = false;
     fetch(`/api/reports${filter ? `?status=${filter}` : ""}`)
       .then((r) => r.json())
-      .then((d) => setReports(d.data ?? []))
-      .finally(() => setLoading(false));
-  }, [filter]);
+      .then((d) => {
+        if (!ignore) setReports(d.data ?? []);
+      })
+      .finally(() => {
+        if (!ignore) setLoading(false);
+      });
+    return () => {
+      ignore = true;
+    };
+  }, [filter, reloadKey]);
 
-  useEffect(() => { load(); }, [load]);
+  const load = () => {
+    setLoading(true);
+    setReloadKey((k) => k + 1);
+  };
 
   async function handleUpdateStatus(id: number, status: string, _notes: string) {
     if (status === "resolved" || status === "in_progress") {
