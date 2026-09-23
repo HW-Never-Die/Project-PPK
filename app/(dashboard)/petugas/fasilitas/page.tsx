@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useState, useEffect } from "react";
 import TagPill from "@/components/ui/TagPill";
 import { Building2 } from "lucide-react";
 
@@ -26,15 +26,20 @@ export default function PetugasFasilitasPage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState<number | null>(null);
 
-  const load = useCallback(() => {
-    setLoading(true);
+  useEffect(() => {
+    let ignore = false;
     fetch("/api/facilities")
       .then((r) => r.json())
-      .then((d) => setFacilities(d.data ?? []))
-      .finally(() => setLoading(false));
+      .then((d) => {
+        if (!ignore) setFacilities(d.data ?? []);
+      })
+      .finally(() => {
+        if (!ignore) setLoading(false);
+      });
+    return () => {
+      ignore = true;
+    };
   }, []);
-
-  useEffect(() => { load(); }, [load]);
 
   async function toggleStatus(facility: Facility) {
     const next = facility.status === "maintenance" ? "active" : "maintenance";

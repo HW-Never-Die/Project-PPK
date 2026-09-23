@@ -1,10 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
-import { z } from "zod";
-
-const patchStatusSchema = z.object({
-  status: z.enum(["active", "maintenance", "inactive"]),
-});
+import {
+  updateFacilitySchema,
+  patchFacilityStatusSchema,
+} from "@/lib/validations/facility";
 
 export async function GET(
   _req: NextRequest,
@@ -17,7 +16,10 @@ export async function GET(
     return NextResponse.json({ error: "ID tidak valid" }, { status: 400 });
   }
 
-  const facility = await prisma.facility.findUnique({ where: { id: facilityId } });
+  const facility = await prisma.facility.findUnique({
+    where: { id: facilityId },
+  });
+
   if (!facility) {
     return NextResponse.json({ error: "Fasilitas tidak ditemukan" }, { status: 404 });
   }
@@ -37,16 +39,35 @@ export async function PUT(
   }
 
   const body = await req.json();
+  const parsed = updateFacilitySchema.safeParse(body);
+
+  if (!parsed.success) {
+    return NextResponse.json(
+      { error: "Validasi gagal", details: parsed.error.flatten().fieldErrors },
+      { status: 400 }
+    );
+  }
+
+  const existing = await prisma.facility.findUnique({
+    where: { id: facilityId },
+  });
+
+  if (!existing) {
+    return NextResponse.json({ error: "Fasilitas tidak ditemukan" }, { status: 404 });
+  }
+
+  const { name, type, location, capacity, description, status, imageUrl } = parsed.data;
 
   const facility = await prisma.facility.update({
     where: { id: facilityId },
     data: {
-      name: body.name,
-      type: body.type,
-      location: body.location,
-      capacity: body.capacity ?? null,
-      description: body.description,
-      imageUrl: body.image_url ?? null,
+      ...(name !== undefined ? { name } : {}),
+      ...(type !== undefined ? { type } : {}),
+      ...(location !== undefined ? { location } : {}),
+      ...(capacity !== undefined ? { capacity } : {}),
+      ...(description !== undefined ? { description } : {}),
+      ...(status !== undefined ? { status } : {}),
+      ...(imageUrl !== undefined ? { imageUrl } : {}),
     },
   });
 
@@ -65,7 +86,7 @@ export async function PATCH(
   }
 
   const body = await req.json();
-  const parsed = patchStatusSchema.safeParse(body);
+  const parsed = patchFacilityStatusSchema.safeParse(body);
 
   if (!parsed.success) {
     return NextResponse.json(
@@ -74,7 +95,10 @@ export async function PATCH(
     );
   }
 
-  const existing = await prisma.facility.findUnique({ where: { id: facilityId } });
+  const existing = await prisma.facility.findUnique({
+    where: { id: facilityId },
+  });
+
   if (!existing) {
     return NextResponse.json({ error: "Fasilitas tidak ditemukan" }, { status: 404 });
   }

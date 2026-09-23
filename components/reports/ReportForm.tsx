@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import { Facility } from "@/types";
 import { Upload, X } from "lucide-react";
 
 type Category = "kerusakan" | "kebersihan" | "keamanan" | "lainnya";
@@ -47,7 +48,7 @@ export default function ReportForm({ onSuccess }: ReportFormProps) {
     fetch("/api/facilities")
       .then(res => res.json())
       .then(data => {
-        const sorted = (data.data ?? []).sort((a: any, b: any) => a.id - b.id);
+        const sorted = (data.data ?? []).sort((a: Facility, b: Facility) => a.id - b.id);
         setFacilities(sorted);
       })
       .catch(console.error);
