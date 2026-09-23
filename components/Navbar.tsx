@@ -15,7 +15,7 @@ export default function Navbar() {
     if (!user) return "/login";
     if (user.role === "admin") return "/admin";
     if (user.role === "petugas") return "/petugas";
-    return "/pengguna/laporan";
+    return "/pengguna";
   };
 
   return (
@@ -43,6 +43,20 @@ export default function Navbar() {
 
             {/* Links */}
             <nav className="hidden md:flex items-center gap-1 overflow-x-auto py-0.5">
+              {/* Dashboard role selalu di paling kiri jika login */}
+              {user && (
+                <Link
+                  href={getDashboardHref()}
+                  className={`px-2.5 py-1.5 text-[13px] font-semibold rounded transition-colors whitespace-nowrap ${
+                    pathname === getDashboardHref()
+                      ? "bg-black/10 text-[#111827]"
+                      : "text-[#23251d] hover:bg-black/5"
+                  }`}
+                >
+                  Dashboard
+                </Link>
+              )}
+
               <Link
                 href="/facilities"
                 className={`px-2.5 py-1.5 text-[13px] font-semibold rounded transition-colors whitespace-nowrap ${
@@ -82,16 +96,6 @@ export default function Navbar() {
               {user?.role === "petugas" && (
                 <>
                   <Link
-                    href="/petugas"
-                    className={`px-2.5 py-1.5 text-[13px] font-semibold rounded transition-colors whitespace-nowrap ${
-                      pathname === "/petugas"
-                        ? "bg-black/10 text-[#111827]"
-                        : "text-[#23251d] hover:bg-black/5"
-                    }`}
-                  >
-                    Dashboard
-                  </Link>
-                  <Link
                     href="/petugas/laporan"
                     className={`px-2.5 py-1.5 text-[13px] font-semibold rounded transition-colors whitespace-nowrap ${
                       pathname.startsWith("/petugas/laporan")
@@ -116,16 +120,6 @@ export default function Navbar() {
 
               {user?.role === "admin" && (
                 <>
-                  <Link
-                    href="/admin"
-                    className={`px-2.5 py-1.5 text-[13px] font-semibold rounded transition-colors whitespace-nowrap ${
-                      pathname === "/admin"
-                        ? "bg-black/10 text-[#111827]"
-                        : "text-[#23251d] hover:bg-black/5"
-                    }`}
-                  >
-                    Dashboard
-                  </Link>
                   <Link
                     href="/admin/fasilitas"
                     className={`px-2.5 py-1.5 text-[13px] font-semibold rounded transition-colors whitespace-nowrap ${
