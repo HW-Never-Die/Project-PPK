@@ -1,5 +1,8 @@
+"use client";
+
 import Link from "next/link";
 import Image from "next/image";
+import { useAuth } from "@/components/AuthProvider";
 import {
   CalendarDays,
   Building2,
@@ -11,6 +14,15 @@ import {
 } from "lucide-react";
 
 export default function Home() {
+  const { user } = useAuth();
+
+  const getDashboardHref = () => {
+    if (!user) return "/login";
+    if (user.role === "admin") return "/admin";
+    if (user.role === "petugas") return "/petugas";
+    return "/pengguna/laporan";
+  };
+
   return (
     <main className="flex-1 flex flex-col items-center justify-start py-8 px-4 sm:px-6 max-w-6xl mx-auto w-full">
       {/* Hero Application Window (PostHog Style) */}
@@ -56,12 +68,22 @@ export default function Home() {
                 <span>Lihat Fasilitas</span>
                 <ArrowRight className="w-4 h-4" />
               </Link>
-              <Link
-                href="/pengguna/laporan/buat"
-                className="inline-flex items-center justify-center gap-2 bg-white hover:bg-[#fdfdf8] text-[#23251d] border border-[#bfc1b7] font-semibold text-sm px-5 py-2.5 rounded-[4px] transition-colors"
-              >
-                <span>Laporkan Kerusakan</span>
-              </Link>
+              {user ? (
+                <Link
+                  href={getDashboardHref()}
+                  className="inline-flex items-center justify-center gap-2 bg-white hover:bg-[#fdfdf8] text-[#23251d] border border-[#bfc1b7] font-bold text-sm px-5 py-2.5 rounded-[4px] transition-colors"
+                >
+                  <span>Buka Dashboard</span>
+                  <ArrowRight className="w-4 h-4" />
+                </Link>
+              ) : (
+                <Link
+                  href="/login"
+                  className="inline-flex items-center justify-center gap-2 bg-white hover:bg-[#fdfdf8] text-[#23251d] border border-[#bfc1b7] font-semibold text-sm px-5 py-2.5 rounded-[4px] transition-colors"
+                >
+                  <span>Masuk</span>
+                </Link>
+              )}
             </div>
           </div>
 
