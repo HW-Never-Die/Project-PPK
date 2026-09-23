@@ -44,12 +44,12 @@ export default function SlotGrid({
       <div className="flex flex-wrap items-center justify-between gap-3 text-xs border-b border-[#eeefe9] pb-3">
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-1.5">
-            <span className="w-3 h-3 rounded-[2px] bg-[#e8f5e9] border border-[#a5d6a7]" />
-            <span className="text-[#2e7d32] font-semibold">Tersedia ({availableCount})</span>
+            <span className="w-3 h-3 rounded-[2px] bg-white border border-[#bfc1b7]" />
+            <span className="text-[#23251d] font-semibold">Tersedia ({availableCount})</span>
           </div>
           <div className="flex items-center gap-1.5">
-            <span className="w-3 h-3 rounded-[2px] bg-[#f3f4f6] border border-[#d1d5db]" />
-            <span className="text-[#6b7280] font-semibold">Terisi / Libur ({occupiedCount})</span>
+            <span className="w-3 h-3 rounded-[2px] bg-[#fef2f2] border border-[#fca5a5]" />
+            <span className="text-[#b91c1c] font-semibold">Tidak Tersedia / Terisi ({occupiedCount})</span>
           </div>
           {interactive && (
             <div className="flex items-center gap-1.5">
@@ -67,13 +67,13 @@ export default function SlotGrid({
           const isSelected = selectedSlots.includes(slot.id);
           const isAvailable = slot.available;
 
-          let cardStyle = "bg-[#f3f4f6] border-[#d1d5db] text-[#9ca3af] cursor-not-allowed";
+          let cardStyle = "bg-[#fef2f2] border-[#fca5a5] text-[#b91c1c] cursor-not-allowed";
           if (isSelected) {
             cardStyle = "bg-[#eb9d2a] border-[#d88c22] text-[#23251d] font-bold shadow-xs cursor-pointer";
           } else if (isAvailable) {
             cardStyle = interactive
-              ? "bg-[#e8f5e9] border-[#a5d6a7] text-[#2e7d32] hover:border-[#2e7d32] cursor-pointer"
-              : "bg-[#e8f5e9] border-[#a5d6a7] text-[#2e7d32] cursor-default";
+              ? "bg-white border-[#bfc1b7] text-[#23251d] hover:border-[#111827] shadow-xs cursor-pointer"
+              : "bg-white border-[#bfc1b7] text-[#23251d] cursor-default";
           }
 
           return (
@@ -95,13 +95,13 @@ export default function SlotGrid({
                 {isSelected ? (
                   <span>Dipilih</span>
                 ) : isAvailable ? (
-                  <span className="flex items-center gap-0.5">
-                    <Check className="w-3 h-3" />
+                  <span className="flex items-center gap-0.5 text-[#23251d]">
+                    <Check className="w-3 h-3 text-[#23251d]" />
                     Tersedia
                   </span>
                 ) : (
-                  <span className="flex items-center gap-0.5">
-                    <X className="w-3 h-3" />
+                  <span className="flex items-center gap-0.5 text-[#b91c1c]">
+                    <X className="w-3 h-3 text-[#b91c1c]" />
                     Terisi
                   </span>
                 )}
