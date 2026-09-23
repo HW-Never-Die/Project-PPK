@@ -13,9 +13,23 @@ export async function GET(req: NextRequest) {
   const capacityParam = searchParams.get("capacity");
   const statusParam = searchParams.get("status");
   const searchParam = searchParams.get("search");
+  const sortParam = searchParams.get("sort");
 
   const parsedType = facilityTypeEnum.safeParse(typeParam);
   const parsedStatus = facilityStatusEnum.safeParse(statusParam);
+
+  let orderBy: Record<string, "asc" | "desc"> = { name: "asc" };
+  if (sortParam === "name_desc") {
+    orderBy = { name: "desc" };
+  } else if (sortParam === "capacity_desc") {
+    orderBy = { capacity: "desc" };
+  } else if (sortParam === "capacity_asc") {
+    orderBy = { capacity: "asc" };
+  } else if (sortParam === "newest") {
+    orderBy = { createdAt: "desc" };
+  } else if (sortParam === "name_asc") {
+    orderBy = { name: "asc" };
+  }
 
   const facilities = await prisma.facility.findMany({
     where: {
@@ -35,7 +49,7 @@ export async function GET(req: NextRequest) {
           }
         : {}),
     },
-    orderBy: { name: "asc" },
+    orderBy,
   });
 
   return NextResponse.json({ data: facilities });

@@ -17,6 +17,7 @@ export default function FacilitiesPage() {
     type: "",
     capacity: "",
     status: "",
+    sort: "name_asc",
   });
 
   // Modal availability state
@@ -37,6 +38,7 @@ export default function FacilitiesPage() {
         if (filters.search) params.set("search", filters.search);
         if (filters.type) params.set("type", filters.type);
         if (filters.capacity) params.set("capacity", filters.capacity);
+        if (filters.sort) params.set("sort", filters.sort);
         params.set("status", "active");
 
         const res = await fetch(`/api/facilities?${params.toString()}`);
@@ -102,6 +104,7 @@ export default function FacilitiesPage() {
       type: "",
       capacity: "",
       status: "",
+      sort: "name_asc",
     });
   };
 

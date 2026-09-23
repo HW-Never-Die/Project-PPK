@@ -7,6 +7,7 @@ interface FilterState {
   type: string;
   capacity: string;
   status: string;
+  sort: string;
 }
 
 interface FacilityFilterProps {
@@ -24,9 +25,9 @@ export default function FacilityFilter({
 }: FacilityFilterProps) {
   return (
     <div className="bg-white border border-[#bfc1b7] rounded-[4px] p-4 mb-6">
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-3">
         {/* Search */}
-        <div className="relative md:col-span-1">
+        <div className="relative">
           <label className="block text-[11px] font-bold text-[#65675e] uppercase tracking-wider mb-1">
             Pencarian
           </label>
@@ -76,6 +77,24 @@ export default function FacilityFilter({
             <option value="30">&ge; 30 Orang</option>
             <option value="50">&ge; 50 Orang</option>
             <option value="100">&ge; 100 Orang</option>
+          </select>
+        </div>
+
+        {/* Sorting Control */}
+        <div>
+          <label className="block text-[11px] font-bold text-[#65675e] uppercase tracking-wider mb-1">
+            Urutkan
+          </label>
+          <select
+            value={filters.sort || "name_asc"}
+            onChange={(e) => onChange({ ...filters, sort: e.target.value })}
+            className="w-full px-3 py-1.5 text-[13px] border border-[#bfc1b7] rounded-[4px] bg-white text-[#23251d] focus:outline-none focus:border-[#111827]"
+          >
+            <option value="name_asc">Nama (A - Z)</option>
+            <option value="name_desc">Nama (Z - A)</option>
+            <option value="capacity_desc">Kapasitas Terbesar</option>
+            <option value="capacity_asc">Kapasitas Terkecil</option>
+            <option value="newest">Terbaru Ditambahkan</option>
           </select>
         </div>
 
