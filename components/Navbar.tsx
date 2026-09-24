@@ -88,7 +88,7 @@ export default function Navbar() {
                         : "text-[#23251d] hover:bg-black/5"
                     }`}
                   >
-                    Riwayat Lapor
+                    Riwayat Laporan
                   </Link>
                   <Link
                     href="/pengguna/laporan/buat"
@@ -98,7 +98,7 @@ export default function Navbar() {
                         : "text-[#23251d] hover:bg-black/5"
                     }`}
                   >
-                    Buat Lapor
+                    Buat Laporan
                   </Link>
                 </>
               )}
