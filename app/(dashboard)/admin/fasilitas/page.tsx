@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Image from "next/image";
 import {
   Building2,
   Plus,
@@ -223,8 +222,8 @@ export default function AdminFacilitiesPage() {
 
       {/* Filter Bar */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 bg-[#fdfdf8] p-3 border border-[#bfc1b7] rounded-[4px]">
-        <div className="relative">
-          <Search className="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-[#65675e]" />
+        <div className="relative flex items-center">
+          <Search className="w-3.5 h-3.5 absolute left-3 text-[#65675e] pointer-events-none" />
           <input
             type="text"
             placeholder="Cari fasilitas..."
@@ -233,7 +232,7 @@ export default function AdminFacilitiesPage() {
               setLoading(true);
               setSearch(e.target.value);
             }}
-            className="w-full pl-8 pr-3 py-1.5 text-xs border border-[#bfc1b7] rounded-[4px] bg-white text-[#23251d] focus:outline-none focus:border-[#111827]"
+            className="w-full pl-9 pr-3 py-1.5 text-xs border border-[#bfc1b7] rounded-[4px] bg-white text-[#23251d] focus:outline-none focus:border-[#111827]"
           />
         </div>
 
@@ -275,64 +274,51 @@ export default function AdminFacilitiesPage() {
       {/* Facilities Master Table */}
       <div className="border border-[#bfc1b7] rounded-[4px] overflow-hidden bg-white">
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs border-collapse">
+          <table className="w-full text-center text-xs border-collapse">
             <thead>
               <tr className="bg-[#fdfdf8] border-b border-[#bfc1b7] text-[#65675e] font-bold">
-                <th className="py-2.5 px-3 w-16">Foto</th>
-                <th className="py-2.5 px-3">Nama Fasilitas</th>
-                <th className="py-2.5 px-3">Tipe</th>
-                <th className="py-2.5 px-3">Lokasi</th>
-                <th className="py-2.5 px-3">Kapasitas</th>
-                <th className="py-2.5 px-3">Status</th>
-                <th className="py-2.5 px-3 text-right">Aksi</th>
+                <th className="py-2.5 px-3 text-center">Nama Fasilitas</th>
+                <th className="py-2.5 px-3 text-center">Tipe</th>
+                <th className="py-2.5 px-3 text-center">Lokasi</th>
+                <th className="py-2.5 px-3 text-center">Kapasitas</th>
+                <th className="py-2.5 px-3 text-center">Status</th>
+                <th className="py-2.5 px-3 text-center">Aksi</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-[#eeefe9]">
               {loading ? (
                 <tr>
-                  <td colSpan={7} className="py-12 text-center text-[#65675e]">
+                  <td colSpan={6} className="py-12 text-center text-[#65675e]">
                     Memuat data master fasilitas...
                   </td>
                 </tr>
               ) : facilities.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="py-12 text-center text-[#65675e]">
+                  <td colSpan={6} className="py-12 text-center text-[#65675e]">
                     Tidak ada data fasilitas ditemukan.
                   </td>
                 </tr>
               ) : (
                 facilities.map((fac) => {
-                  const img = fac.imageUrl && fac.imageUrl.trim() !== "" ? fac.imageUrl : "/images/facilities/no-image.webp";
                   return (
                     <tr key={fac.id} className="hover:bg-[#fdfdf8] transition-colors">
-                      <td className="py-2.5 px-3">
-                        <div className="relative w-12 h-9 rounded-[2px] overflow-hidden border border-[#d1d5db] bg-[#eeefe9]">
-                          <Image
-                            src={img}
-                            alt={fac.name}
-                            fill
-                            className="object-cover"
-                            sizes="48px"
-                          />
-                        </div>
-                      </td>
-                      <td className="py-2.5 px-3">
+                      <td className="py-2.5 px-3 text-center">
                         <div className="font-bold text-[#111827]">{fac.name}</div>
-                        <div className="text-[11px] text-[#65675e] line-clamp-1 max-w-xs">{fac.description}</div>
+                        <div className="text-[11px] text-[#65675e] line-clamp-1 max-w-xs mx-auto">{fac.description}</div>
                       </td>
-                      <td className="py-2.5 px-3">
+                      <td className="py-2.5 px-3 text-center">
                         <span className="bg-[#eeefe9] px-2 py-0.5 rounded-[2px] font-medium text-[#23251d]">
                           {formatFacilityType(fac.type)}
                         </span>
                       </td>
-                      <td className="py-2.5 px-3 text-[#4B5563]">{fac.location}</td>
-                      <td className="py-2.5 px-3 text-[#4B5563]">
+                      <td className="py-2.5 px-3 text-center text-[#4B5563]">{fac.location}</td>
+                      <td className="py-2.5 px-3 text-center text-[#4B5563]">
                         {fac.capacity ? `${fac.capacity} orang` : "-"}
                       </td>
-                      <td className="py-2.5 px-3">
+                      <td className="py-2.5 px-3 text-center">
                         <TagPill status={fac.status} />
                       </td>
-                      <td className="py-2.5 px-3 text-right space-x-1.5 whitespace-nowrap">
+                      <td className="py-2.5 px-3 text-center space-x-1.5 whitespace-nowrap">
                         <button
                           type="button"
                           onClick={() => handleOpenEdit(fac)}
@@ -378,9 +364,10 @@ export default function AdminFacilitiesPage() {
               <button
                 type="button"
                 onClick={() => setIsModalOpen(false)}
-                className="text-[#65675e] hover:text-[#111827] p-1 rounded hover:bg-black/5 transition-colors cursor-pointer"
+                className="text-[#111827] hover:text-black p-1.5 rounded-md bg-black/5 hover:bg-black/10 transition-colors cursor-pointer flex items-center justify-center"
+                aria-label="Tutup"
               >
-                <X className="w-4 h-4" />
+                <X className="w-7 h-7" strokeWidth={2.5} />
               </button>
             </div>
 
