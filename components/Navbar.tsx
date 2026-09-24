@@ -181,13 +181,6 @@ export default function Navbar() {
               <div className="h-8 w-20 bg-black/5 rounded animate-pulse" />
             ) : user ? (
               <div className="flex items-center gap-2 sm:gap-3">
-                <Link
-                  href={getDashboardHref()}
-                  className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 text-[13px] font-bold bg-[#eb9d2a] hover:bg-[#d88c22] text-[#23251d] rounded transition-colors"
-                >
-                  Buka Dashboard
-                </Link>
-
                 <div className="flex items-center gap-2 px-2.5 py-1 bg-white/70 border border-[#d1d5db] rounded text-left">
                   <div className="w-6 h-6 rounded-full bg-[#eeefe9] border border-[#bfc1b7] flex items-center justify-center text-[11px] font-bold text-[#23251d]">
                     {user.name?.charAt(0)?.toUpperCase() || <UserIcon className="w-3.5 h-3.5" />}
