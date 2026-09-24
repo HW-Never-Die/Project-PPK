@@ -58,19 +58,6 @@ export default function LoginPage() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-sandy-desk px-4">
       <div className="w-full max-w-md rounded-[6px] border border-warm-mist bg-paper-white">
-        <div className="flex items-center justify-between border-b border-warm-mist px-4 py-3">
-          <div className="flex items-center gap-2">
-            <div className="flex gap-1.5">
-              <span className="h-3 w-3 rounded-full bg-flame-orange/60" />
-              <span className="h-3 w-3 rounded-full bg-marigold/60" />
-              <span className="h-3 w-3 rounded-full bg-moss-green/60" />
-            </div>
-            <span className="text-micro font-medium text-sage-gray font-ibm-plex-sans-variable">
-              login.tsx
-            </span>
-          </div>
-        </div>
-
         <div className="p-8">
           <h1 className="text-heading-lg font-bold tracking-heading-lg text-deep-moss mb-2">
             Masuk

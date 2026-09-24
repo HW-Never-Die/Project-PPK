@@ -1,7 +1,7 @@
 "use client";
 
+import { type InputHTMLAttributes } from "react";
 import { cn } from "@/lib/utils";
-import type { InputHTMLAttributes } from "react";
 
 type InputProps = InputHTMLAttributes<HTMLInputElement> & {
   label?: string;
@@ -13,6 +13,7 @@ export default function Input({
   error,
   className,
   id,
+  type,
   ...props
 }: InputProps) {
   const inputId = id || label?.toLowerCase().replace(/\s+/g, "-");
@@ -27,18 +28,21 @@ export default function Input({
           {label}
         </label>
       )}
-      <input
-        id={inputId}
-        className={cn(
-          "w-full rounded-md border border-warm-mist bg-paper-white px-3 py-2 text-caption text-deep-moss font-ibm-plex-sans-variable",
-          "placeholder:text-ash-green",
-          "focus:outline-none focus:border-signal-blue focus:ring-1 focus:ring-signal-blue",
-          "transition-colors duration-150",
-          error && "border-flame-orange",
-          className
-        )}
-        {...props}
-      />
+      <div className="relative flex items-center">
+        <input
+          id={inputId}
+          type={type}
+          className={cn(
+            "w-full rounded-md border border-warm-mist bg-paper-white px-3 py-2 text-caption text-deep-moss font-ibm-plex-sans-variable",
+            "placeholder:text-ash-green",
+            "focus:outline-none focus:border-signal-blue focus:ring-1 focus:ring-signal-blue",
+            "transition-colors duration-150",
+            error && "border-flame-orange",
+            className
+          )}
+          {...props}
+        />
+      </div>
       {error && (
         <p className="text-micro text-flame-orange">{error}</p>
       )}
