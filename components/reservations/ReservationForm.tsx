@@ -51,9 +51,9 @@ const labelStyle: React.CSSProperties = {
   fontFamily: "'IBM Plex Sans Variable', sans-serif",
 };
 
-export default function ReservationForm() {
+export default function ReservationForm({ initialFacilityId }: { initialFacilityId?: number }) {
   const [facilities, setFacilities] = useState<Facility[]>([]);
-  const [facilityId, setFacilityId] = useState<number | "">("");
+  const [facilityId, setFacilityId] = useState<number | "">(initialFacilityId || "");
   const [date, setDate] = useState("");
   const [selectedSlots, setSelectedSlots] = useState<number[]>([]);
   const [purpose, setPurpose] = useState("");

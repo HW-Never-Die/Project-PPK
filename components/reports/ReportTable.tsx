@@ -50,9 +50,9 @@ export default function ReportTable({ reports, mode = "user", onUpdateStatus }: 
 
   const thStyle: React.CSSProperties = {
     padding: "8px 12px",
-    textAlign: "left",
+    textAlign: "center",
     fontSize: "12px",
-    fontWeight: 500,
+    fontWeight: 600,
     color: "#65675e",
     fontFamily: "'IBM Plex Sans Variable', sans-serif",
     borderBottom: "1px solid #bfc1b7",
@@ -61,11 +61,12 @@ export default function ReportTable({ reports, mode = "user", onUpdateStatus }: 
 
   const tdStyle: React.CSSProperties = {
     padding: "10px 12px",
+    textAlign: "center",
     fontSize: "13px",
     color: "#23251d",
     fontFamily: "'IBM Plex Sans Variable', sans-serif",
     borderBottom: "1px solid #eeefe9",
-    verticalAlign: "top",
+    verticalAlign: "middle",
   };
 
   return (

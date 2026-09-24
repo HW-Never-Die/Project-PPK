@@ -1,12 +1,13 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Building2, X, Calendar as CalendarIcon, Info } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+import { X, Info } from "lucide-react";
 import FacilityCard from "@/components/facilities/FacilityCard";
 import FacilityFilter from "@/components/facilities/FacilityFilter";
-import SlotGrid from "@/components/facilities/SlotGrid";
 import TagPill from "@/components/ui/TagPill";
-import { Facility, SlotAvailability } from "@/types";
+import { Facility } from "@/types";
 import { formatFacilityType } from "@/lib/utils";
 
 export default function FacilitiesPage() {
@@ -20,14 +21,16 @@ export default function FacilitiesPage() {
     sort: "name_asc",
   });
 
-  // Modal availability state
+  // Modal floating detail state
   const [selectedFacility, setSelectedFacility] = useState<Facility | null>(null);
-  const [targetDate, setTargetDate] = useState(() => {
-    const today = new Date();
-    return today.toISOString().split("T")[0];
-  });
-  const [slots, setSlots] = useState<SlotAvailability[]>([]);
-  const [loadingSlots, setLoadingSlots] = useState(false);
+
+  const defaultImages: Record<string, string> = {
+    ruang_kelas: "/images/facilities/ruang-kelas.webp",
+    laboratorium: "/images/facilities/lab-komputer.webp",
+    aula: "/images/facilities/aula.webp",
+    lapangan: "/images/facilities/lapangan-basket.webp",
+    alat: "/images/facilities/no-image.webp",
+  };
 
   useEffect(() => {
     let ignore = false;
@@ -62,36 +65,6 @@ export default function FacilitiesPage() {
     };
   }, [filters]);
 
-  const fetchAvailability = async (facilityId: number, dateStr: string) => {
-    setLoadingSlots(true);
-    try {
-      const res = await fetch(`/api/facilities/${facilityId}/availability?date=${dateStr}`);
-      const data = await res.json();
-      if (data?.data?.slots) {
-        setSlots(data.data.slots);
-      } else {
-        setSlots([]);
-      }
-    } catch (err) {
-      console.error("Gagal memuat ketersediaan slot:", err);
-      setSlots([]);
-    } finally {
-      setLoadingSlots(false);
-    }
-  };
-
-  const handleOpenAvailability = (fac: Facility) => {
-    setSelectedFacility(fac);
-    fetchAvailability(fac.id, targetDate);
-  };
-
-  const handleDateChange = (newDate: string) => {
-    setTargetDate(newDate);
-    if (selectedFacility) {
-      fetchAvailability(selectedFacility.id, newDate);
-    }
-  };
-
   const handleFilterChange = (newFilters: typeof filters) => {
     setLoading(true);
     setFilters(newFilters);
@@ -112,14 +85,11 @@ export default function FacilitiesPage() {
     <div className="flex-1 w-full max-w-6xl mx-auto p-4 sm:p-6">
       {/* Header */}
       <div className="mb-6">
-        <div className="flex items-center gap-2 mb-1">
-          <Building2 className="w-5 h-5 text-[#eb9d2a]" />
-          <h1 className="text-2xl font-extrabold text-[#111827] tracking-tight">
-            Katalog Fasilitas Kampus
-          </h1>
-        </div>
+        <h1 className="text-2xl font-extrabold text-[#111827] tracking-tight mb-1">
+          Katalog Fasilitas Kampus
+        </h1>
         <p className="text-[14px] text-[#4B5563]">
-          Eksplorasi sarana prasarana FSM Undip dan periksa ketersediaan 26 slot waktu operasional (07:00 – 20:00).
+          Eksplorasi sarana prasarana FSM Undip dan temukan detail informasi kapasitas serta fasilitas yang dapat direservasi.
         </p>
       </div>
 
@@ -157,72 +127,96 @@ export default function FacilitiesPage() {
             <FacilityCard
               key={fac.id}
               facility={fac}
-              onCheckAvailability={handleOpenAvailability}
+              onViewDetail={(item) => setSelectedFacility(item)}
             />
           ))}
         </div>
       )}
 
-      {/* Availability Modal (PostHog Application Window Style) */}
+      {/* Floating Detail Page / Modal */}
       {selectedFacility && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs">
-          <div className="bg-white border border-[#bfc1b7] rounded-[6px] shadow-lg w-full max-w-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs">
+          <div className="bg-white border border-[#bfc1b7] rounded-[6px] shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-150">
             {/* Modal Title Bar */}
-            <div className="bg-[#fdfdf8] border-b border-[#bfc1b7] px-4 py-3 flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <span className="w-2.5 h-2.5 rounded-full bg-[#eb9d2a]" />
-                <span className="font-bold text-sm text-[#111827]">
-                  Ketersediaan Slot: {selectedFacility.name}
-                </span>
-              </div>
+            <div className="bg-[#fdfdf8] border-b border-[#bfc1b7] px-5 py-3.5 flex items-center justify-between shrink-0">
+              <span className="font-bold text-base text-[#111827]">
+                Detail Fasilitas
+              </span>
               <button
                 type="button"
                 onClick={() => setSelectedFacility(null)}
-                className="text-[#65675e] hover:text-[#111827] p-1 rounded hover:bg-black/5 transition-colors cursor-pointer"
+                className="p-1.5 text-[#111827] hover:text-black bg-black/5 hover:bg-black/10 rounded-md transition-colors cursor-pointer flex items-center justify-center"
+                aria-label="Tutup modal"
+                title="Tutup"
               >
-                <X className="w-4 h-4" />
+                <X className="w-7 h-7" strokeWidth={2.5} />
               </button>
             </div>
 
-            {/* Modal Body */}
-            <div className="p-5 space-y-4">
-              <div className="flex flex-wrap items-center justify-between gap-3 bg-[#eeefe9]/50 p-3 rounded-[4px] border border-[#d1d5db]">
-                <div className="text-xs space-y-0.5">
-                  <div className="flex items-center gap-2">
-                    <span className="font-bold text-[#111827]">{selectedFacility.location}</span>
-                    <TagPill status={selectedFacility.status} />
+            {/* Modal Body - Scrollable */}
+            <div className="p-6 space-y-5 overflow-y-auto">
+              {/* Foto Ukuran Besar */}
+              <div className="relative w-full aspect-[16/9] sm:aspect-[2/1] rounded-[4px] overflow-hidden border border-[#bfc1b7] bg-[#eeefe9]">
+                <Image
+                  src={
+                    selectedFacility.imageUrl && selectedFacility.imageUrl.trim() !== ""
+                      ? selectedFacility.imageUrl
+                      : defaultImages[selectedFacility.type] || "/images/facilities/no-image.webp"
+                  }
+                  alt={selectedFacility.name}
+                  fill
+                  sizes="(max-width: 768px) 100vw, 672px"
+                  className="object-cover"
+                  priority
+                />
+                <div className="absolute top-3 right-3">
+                  <TagPill status={selectedFacility.status} />
+                </div>
+                <div className="absolute bottom-3 left-3 bg-[#23251d]/90 text-white text-xs font-semibold px-2.5 py-1 rounded-[3px] backdrop-blur-xs">
+                  {formatFacilityType(selectedFacility.type)}
+                </div>
+              </div>
+
+              {/* 3 Info Utama: Nama, Lokasi, Kapasitas */}
+              <div>
+                <h2 className="text-xl sm:text-2xl font-extrabold text-[#111827] tracking-tight">
+                  {selectedFacility.name}
+                </h2>
+                <div className="mt-2.5 flex flex-wrap items-center gap-y-2 gap-x-5 text-sm text-[#4B5563]">
+                  <div>
+                    <span className="font-semibold text-[#111827]">Lokasi: </span>
+                    <span>{selectedFacility.location}</span>
                   </div>
-                  <p className="text-[#65675e]">
-                    Tipe: {formatFacilityType(selectedFacility.type)}
-                    {selectedFacility.capacity ? ` • Kapasitas: ${selectedFacility.capacity} orang` : ""}
-                  </p>
-                </div>
-
-                {/* Date Picker */}
-                <div className="flex items-center gap-2">
-                  <CalendarIcon className="w-4 h-4 text-[#eb9d2a]" />
-                  <input
-                    type="date"
-                    value={targetDate}
-                    onChange={(e) => handleDateChange(e.target.value)}
-                    className="px-2.5 py-1 text-xs font-mono font-medium border border-[#bfc1b7] rounded-[4px] bg-white text-[#23251d] focus:outline-none focus:border-[#111827]"
-                  />
+                  <div>
+                    <span className="font-semibold text-[#111827]">Kapasitas: </span>
+                    <span>
+                      {selectedFacility.capacity
+                        ? `${selectedFacility.capacity} orang`
+                        : "Tanpa batas (Alat)"}
+                    </span>
+                  </div>
                 </div>
               </div>
 
-              {/* Slot Matrix */}
-              <SlotGrid slots={slots} isLoading={loadingSlots} />
-
-              <div className="pt-2 text-[11px] text-[#65675e] border-t border-[#eeefe9] flex items-center justify-between">
-                <span>* Status slot diperbarui otomatis sesuai jadwal reservasi yang telah disetujui.</span>
-                <button
-                  type="button"
-                  onClick={() => setSelectedFacility(null)}
-                  className="px-3 py-1 font-semibold text-xs border border-[#bfc1b7] rounded-[4px] hover:bg-[#fdfdf8] cursor-pointer"
-                >
-                  Tutup
-                </button>
+              {/* Deskripsi Lengkap */}
+              <div className="pt-4 border-t border-[#eeefe9] space-y-1.5">
+                <h4 className="text-xs font-bold uppercase tracking-wider text-[#65675e]">
+                  Deskripsi Lengkap
+                </h4>
+                <p className="text-sm text-[#23251d] leading-relaxed whitespace-pre-line bg-[#fdfdf8] p-3.5 rounded-[4px] border border-[#eeefe9]">
+                  {selectedFacility.description || "Tidak ada deskripsi rinci untuk fasilitas ini."}
+                </p>
               </div>
+            </div>
+
+            {/* Modal Footer - Reservasi Sekarang di Ujung Kanan */}
+            <div className="bg-[#fdfdf8] border-t border-[#bfc1b7] px-6 py-3.5 flex items-center justify-end shrink-0">
+              <Link
+                href={`/pengguna/reservasi/buat?facilityId=${selectedFacility.id}`}
+                className="inline-flex items-center justify-center bg-[#eb9d2a] hover:bg-[#d88c22] text-[#23251d] font-bold text-sm py-2.5 px-5 rounded-[4px] transition-colors shadow-xs"
+              >
+                <span>Reservasi Sekarang</span>
+              </Link>
             </div>
           </div>
         </div>

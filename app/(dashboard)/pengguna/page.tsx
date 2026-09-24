@@ -17,7 +17,7 @@ export default async function PenggunaDashboardPage() {
   const session = await getSession();
   const userId = session?.userId ?? 3; // fallback mock
 
-  const [totalReports, inProgressReports, resolvedReports, recentReports, totalFacilities] =
+  const [totalReports, inProgressReports, resolvedReports, recentReports, totalFacilities, totalReservations, pendingReservations] =
     await Promise.all([
       prisma.report.count({ where: { userId } }),
       prisma.report.count({ where: { userId, status: "in_progress" } }),
@@ -31,6 +31,8 @@ export default async function PenggunaDashboardPage() {
         },
       }),
       prisma.facility.count({ where: { status: "active" } }),
+      prisma.reservation.count({ where: { userId } }),
+      prisma.reservation.count({ where: { userId, status: "pending" } }),
     ]);
 
   const cardBase: React.CSSProperties = {
@@ -100,6 +102,23 @@ export default async function PenggunaDashboardPage() {
             }}
           >
             <Plus size={14} /> Buat Laporan
+          </Link>
+          <Link
+            href="/pengguna/reservasi/buat"
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "6px",
+              padding: "6px 12px",
+              backgroundColor: "#eb9d2a",
+              color: "#23251d",
+              borderRadius: "4px",
+              fontSize: "12px",
+              fontWeight: 700,
+              textDecoration: "none",
+            }}
+          >
+            <Calendar size={14} /> Buat Reservasi
           </Link>
           <Link
             href="/facilities"
@@ -175,6 +194,39 @@ export default async function PenggunaDashboardPage() {
           >
             Eksplorasi katalog <ArrowRight size={12} />
           </Link>
+        </div>
+
+        <div style={cardBase}>
+          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+            <Calendar size={16} style={{ color: "#2f80fa" }} />
+            <span style={{ fontSize: "13px", color: "#65675e" }}>Total Reservasi</span>
+          </div>
+          <div style={{ fontSize: "36px", fontWeight: 800, color: "#23251d", letterSpacing: "-0.6px", lineHeight: 1.2 }}>
+            {totalReservations}
+          </div>
+          <Link
+            href="/pengguna/reservasi"
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "4px",
+              fontSize: "12px",
+              color: "#2f80fa",
+              textDecoration: "none",
+            }}
+          >
+            Lihat riwayat <ArrowRight size={12} />
+          </Link>
+        </div>
+
+        <div style={cardBase}>
+          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+            <Calendar size={16} style={{ color: "#eb9d2a" }} />
+            <span style={{ fontSize: "13px", color: "#65675e" }}>Reservasi Pending</span>
+          </div>
+          <div style={{ fontSize: "36px", fontWeight: 800, color: "#23251d", letterSpacing: "-0.6px", lineHeight: 1.2 }}>
+            {pendingReservations}
+          </div>
         </div>
       </div>
 

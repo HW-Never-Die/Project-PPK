@@ -54,19 +54,6 @@ export default function RegisterPage() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-sandy-desk px-4">
       <div className="w-full max-w-md rounded-[6px] border border-warm-mist bg-paper-white">
-        <div className="flex items-center justify-between border-b border-warm-mist px-4 py-3">
-          <div className="flex items-center gap-2">
-            <div className="flex gap-1.5">
-              <span className="h-3 w-3 rounded-full bg-flame-orange/60" />
-              <span className="h-3 w-3 rounded-full bg-marigold/60" />
-              <span className="h-3 w-3 rounded-full bg-moss-green/60" />
-            </div>
-            <span className="text-micro font-medium text-sage-gray font-ibm-plex-sans-variable">
-              register.tsx
-            </span>
-          </div>
-        </div>
-
         <div className="p-8">
           {success ? (
             <div className="text-center">
@@ -89,12 +76,11 @@ export default function RegisterPage() {
                 Registrasi Berhasil
               </h1>
               <p className="text-caption text-sage-gray mb-6">
-                Akun kamu telah terdaftar. Silakan tunggu verifikasi dari admin
-                sebelum bisa login.
+                Akun kamu telah berhasil dibuat dan saat ini menunggu verifikasi oleh admin. Silakan tunggu hingga akun disetujui untuk dapat masuk ke sistem.
               </p>
               <Link href="/login">
                 <Button variant="primary" className="w-full">
-                  Kembali ke Login
+                  Kembali ke Halaman Masuk
                 </Button>
               </Link>
             </div>
@@ -103,14 +89,9 @@ export default function RegisterPage() {
               <h1 className="text-heading-lg font-bold tracking-heading-lg text-deep-moss mb-2">
                 Daftar Akun
               </h1>
-              <p className="text-caption text-sage-gray mb-2">
+              <p className="text-caption text-sage-gray mb-6">
                 Buat akun baru untuk menggunakan sistem Eunomia
               </p>
-
-              <div className="mb-6 rounded-md border border-marigold/30 bg-marigold/10 px-3 py-2 text-caption text-dark-amber">
-                Akun yang didaftarkan secara mandiri perlu diverifikasi admin
-                sebelum bisa login.
-              </div>
 
               {generalError && (
                 <div className="mb-4 rounded-md border border-flame-orange/30 bg-flame-orange/10 px-3 py-2 text-caption text-flame-orange">

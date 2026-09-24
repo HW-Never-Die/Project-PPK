@@ -58,9 +58,10 @@ export default function Modal({
             </h2>
             <button
               onClick={onClose}
-              className="rounded-md p-1 text-sage-gray hover:bg-pale-stone hover:text-deep-moss transition-colors duration-150"
+              className="rounded-md p-1.5 text-[#111827] bg-black/5 hover:bg-black/10 hover:text-black transition-colors duration-150 cursor-pointer flex items-center justify-center"
+              aria-label="Tutup"
             >
-              <X className="h-4 w-4" />
+              <X className="h-7 w-7" strokeWidth={2.5} />
             </button>
           </div>
         )}

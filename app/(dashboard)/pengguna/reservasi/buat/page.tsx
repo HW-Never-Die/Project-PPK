@@ -1,6 +1,19 @@
+"use client";
+
+import { Suspense } from "react";
 import ReservationForm from "@/components/reservations/ReservationForm";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
+import { useSearchParams } from "next/navigation";
+
+function BuatReservasiContent() {
+  const searchParams = useSearchParams();
+  const facilityId = searchParams.get("facilityId");
+
+  return (
+    <ReservationForm initialFacilityId={facilityId ? Number(facilityId) : undefined} />
+  );
+}
 
 export default function BuatReservasiPage() {
   return (
@@ -36,7 +49,9 @@ export default function BuatReservasiPage() {
           Pilih fasilitas, tanggal, dan slot waktu yang tersedia
         </p>
       </div>
-      <ReservationForm />
+      <Suspense fallback={<div className="py-8 text-sm text-[#65675e]">Memuat formulir reservasi...</div>}>
+        <BuatReservasiContent />
+      </Suspense>
     </div>
   );
 }

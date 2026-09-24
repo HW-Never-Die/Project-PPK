@@ -72,3 +72,70 @@ export async function PATCH(
     );
   }
 }
+
+export async function DELETE(
+  _request: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const { id } = await params;
+    const userId = parseInt(id, 10);
+    if (isNaN(userId)) {
+      return NextResponse.json(
+        { success: false, error: "ID user tidak valid" },
+        { status: 400 }
+      );
+    }
+
+    const existingUser = await prisma.user.findUnique({
+      where: { id: userId },
+    });
+
+    if (!existingUser) {
+      return NextResponse.json(
+        { success: false, error: "User tidak ditemukan" },
+        { status: 404 }
+      );
+    }
+
+    if (existingUser.role === "admin") {
+      return NextResponse.json(
+        { success: false, error: "Akun Administrator tidak dapat dihapus" },
+        { status: 403 }
+      );
+    }
+
+    await prisma.$transaction(async (tx) => {
+      // Unlink processor references
+      await tx.reservation.updateMany({
+        where: { processedBy: userId },
+        data: { processedBy: null },
+      });
+      await tx.report.updateMany({
+        where: { processedBy: userId },
+        data: { processedBy: null },
+      });
+      // Delete user's own reservations and reports
+      await tx.reservation.deleteMany({
+        where: { userId },
+      });
+      await tx.report.deleteMany({
+        where: { userId },
+      });
+      // Delete user record
+      await tx.user.delete({
+        where: { id: userId },
+      });
+    });
+
+    return NextResponse.json({
+      success: true,
+      message: "User berhasil dihapus",
+    });
+  } catch {
+    return NextResponse.json(
+      { success: false, error: "Terjadi kesalahan server saat menghapus user" },
+      { status: 500 }
+    );
+  }
+}
