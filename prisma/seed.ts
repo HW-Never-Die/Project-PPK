@@ -12,6 +12,7 @@ async function main() {
       { name: "Petugas Satu", email: "petugas1@eunomia.ac.id", password: hash("petugas123"), role: "petugas", status: "verified" },
       { name: "Budi Santoso", email: "budi@student.ac.id", password: hash("user123"), role: "pengguna", status: "verified" },
       { name: "Siti Rahayu", email: "siti@student.ac.id", password: hash("user123"), role: "pengguna", status: "pending" },
+      { name: "HW Never Die", email: "HWNeverDie@gmail.com", password: hash("12345678"), role: "pengguna", status: "verified" },
     ],
     skipDuplicates: true,
   });

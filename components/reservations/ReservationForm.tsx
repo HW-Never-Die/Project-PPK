@@ -76,6 +76,19 @@ export default function ReservationForm({ initialFacilityId }: { initialFacility
     return () => { cancelled = true; };
   }, []);
 
+  const markPastSlots = (slotList: SlotAvailability[], selectedDate: string): SlotAvailability[] => {
+    const now = new Date();
+    const nowWIB = new Date(now.getTime() + 7 * 60 * 60 * 1000);
+    const today = nowWIB.toISOString().split("T")[0];
+    if (selectedDate !== today) return slotList;
+    const nowMins = nowWIB.getUTCHours() * 60 + nowWIB.getUTCMinutes();
+    return slotList.map((slot) => {
+      const [h, m] = slot.time.split(":").map(Number);
+      if (h * 60 + m <= nowMins) return { ...slot, available: false };
+      return slot;
+    });
+  };
+
   useEffect(() => {
     if (!facilityId || !date) {
       Promise.resolve().then(() => {
@@ -91,14 +104,20 @@ export default function ReservationForm({ initialFacilityId }: { initialFacility
       .then((r) => r.json())
       .then((d) => {
         if (cancelled) return;
-        if (d.data) {
-          setSlots(d.data);
+        let parsed: SlotAvailability[];
+        if (d.data?.slots && Array.isArray(d.data.slots)) {
+          parsed = d.data.slots.map((s: { startTime: string; endTime: string; available: boolean }) => ({
+            time: s.startTime,
+            label: `${s.startTime} - ${s.endTime}`,
+            available: s.available,
+          }));
         } else {
-          setSlots(SLOTS);
+          parsed = SLOTS;
         }
+        setSlots(markPastSlots(parsed, date));
         setSelectedSlots([]);
       })
-      .catch(() => { if (!cancelled) setSlots(SLOTS); })
+      .catch(() => { if (!cancelled) setSlots(markPastSlots(SLOTS, date)); })
       .finally(() => { if (!cancelled) setLoadingSlots(false); });
     return () => { cancelled = true; };
   }, [facilityId, date]);

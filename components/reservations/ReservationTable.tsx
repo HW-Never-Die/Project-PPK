@@ -28,11 +28,9 @@ function formatTime(isoOrTime: string): string {
   try {
     const d = new Date(isoOrTime);
     if (!isNaN(d.getTime())) {
-      return d.toLocaleTimeString("id-ID", {
-        hour: "2-digit",
-        minute: "2-digit",
-        hour12: false,
-      });
+      const h = String(d.getUTCHours()).padStart(2, "0");
+      const m = String(d.getUTCMinutes()).padStart(2, "0");
+      return `${h}:${m}`;
     }
   } catch { /* noop */ }
   return isoOrTime;
@@ -46,6 +44,7 @@ function formatDate(iso: string): string {
       day: "numeric",
       month: "short",
       year: "numeric",
+      timeZone: "Asia/Jakarta",
     });
   } catch {
     return iso;
