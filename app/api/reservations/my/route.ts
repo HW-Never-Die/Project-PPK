@@ -1,17 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
-import { getSessionUser } from "@/lib/auth-mock";
+import { getSession } from "@/lib/auth";
 
 export async function GET(request: NextRequest) {
-  const user = await getSessionUser();
-  if (!user) {
+  const session = await getSession();
+  if (!session) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   const { searchParams } = request.nextUrl;
   const status = searchParams.get("status");
 
-  const where: Record<string, unknown> = { userId: user.id };
+  const where: Record<string, unknown> = { userId: session.userId };
   if (status) where.status = status;
 
   const reservations = await prisma.reservation.findMany({

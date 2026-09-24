@@ -1,13 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
-import { getSessionUser } from "@/lib/auth-mock";
+import { getSession } from "@/lib/auth";
 import { updateReservationSchema } from "@/lib/validations/reservation";
 
 type RouteContext = { params: Promise<{ id: string }> };
 
 export async function GET(_request: NextRequest, context: RouteContext) {
-  const user = await getSessionUser();
-  if (!user) {
+  const session = await getSession();
+  if (!session) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -31,8 +31,8 @@ export async function GET(_request: NextRequest, context: RouteContext) {
   }
 
   if (
-    user.role === "pengguna" &&
-    reservation.userId !== user.id
+    session.role === "pengguna" &&
+    reservation.userId !== session.userId
   ) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
@@ -41,8 +41,8 @@ export async function GET(_request: NextRequest, context: RouteContext) {
 }
 
 export async function PATCH(request: NextRequest, context: RouteContext) {
-  const user = await getSessionUser();
-  if (!user) {
+  const session = await getSession();
+  if (!session) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -74,7 +74,7 @@ export async function PATCH(request: NextRequest, context: RouteContext) {
 
   // === APPROVE (Petugas/Admin) ===
   if (action === "approve") {
-    if (user.role !== "petugas" && user.role !== "admin") {
+    if (session.role !== "petugas" && session.role !== "admin") {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
     if (reservation.status !== "pending") {
@@ -99,8 +99,11 @@ export async function PATCH(request: NextRequest, context: RouteContext) {
     });
 
     if (conflicting) {
-      const fmt = (d: Date) =>
-        d.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit", hour12: false });
+      const fmt = (d: Date) => {
+        const h = String(d.getUTCHours()).padStart(2, "0");
+        const m = String(d.getUTCMinutes()).padStart(2, "0");
+        return `${h}:${m}`;
+      };
       return NextResponse.json(
         {
           error: "Jadwal bentrok dengan reservasi lain yang sudah disetujui",
@@ -118,7 +121,7 @@ export async function PATCH(request: NextRequest, context: RouteContext) {
       where: { id: reservationId },
       data: {
         status: "approved",
-        processedBy: user.id,
+        processedBy: session.userId,
         processedAt: new Date(),
       },
     });
@@ -128,7 +131,7 @@ export async function PATCH(request: NextRequest, context: RouteContext) {
 
   // === REJECT (Petugas/Admin) ===
   if (action === "reject") {
-    if (user.role !== "petugas" && user.role !== "admin") {
+    if (session.role !== "petugas" && session.role !== "admin") {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
     if (reservation.status !== "pending") {
@@ -142,7 +145,7 @@ export async function PATCH(request: NextRequest, context: RouteContext) {
       where: { id: reservationId },
       data: {
         status: "rejected",
-        processedBy: user.id,
+        processedBy: session.userId,
         processedAt: new Date(),
       },
     });
@@ -152,7 +155,7 @@ export async function PATCH(request: NextRequest, context: RouteContext) {
 
   // === CANCEL (Pengguna sendiri atau Petugas darurat) ===
   if (action === "cancel") {
-    if (user.role === "petugas" || user.role === "admin") {
+    if (session.role === "petugas" || session.role === "admin") {
       // Petugas: cancel darurat, wajib cancel_reason
       if (!cancelReason) {
         return NextResponse.json(
@@ -172,7 +175,7 @@ export async function PATCH(request: NextRequest, context: RouteContext) {
         data: {
           status: "cancelled",
           cancelReason,
-          processedBy: user.id,
+          processedBy: session.userId,
           processedAt: new Date(),
         },
       });
@@ -181,7 +184,7 @@ export async function PATCH(request: NextRequest, context: RouteContext) {
     }
 
     // Pengguna: cancel milik sendiri
-    if (reservation.userId !== user.id) {
+    if (reservation.userId !== session.userId) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
     if (reservation.status !== "pending" && reservation.status !== "approved") {
@@ -191,12 +194,13 @@ export async function PATCH(request: NextRequest, context: RouteContext) {
       );
     }
 
-    // Cek apakah waktu reservasi sudah lewat
     const now = new Date();
-    const reservationDate = new Date(reservation.date);
-    const [hours, minutes] = [reservation.startTime.getHours(), reservation.startTime.getMinutes()];
-    reservationDate.setHours(hours, minutes, 0, 0);
-    if (reservationDate <= now) {
+    const nowWIB = new Date(now.getTime() + 7 * 60 * 60 * 1000);
+    const resDateStr = reservation.date.toISOString().split("T")[0]!;
+    const resH = reservation.startTime.getUTCHours();
+    const resM = reservation.startTime.getUTCMinutes();
+    const reservationWIB = new Date(`${resDateStr}T${String(resH).padStart(2, "0")}:${String(resM).padStart(2, "0")}:00.000Z`);
+    if (reservationWIB <= nowWIB) {
       return NextResponse.json(
         { error: "Tidak dapat membatalkan reservasi yang waktunya sudah lewat" },
         { status: 400 }

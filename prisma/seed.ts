@@ -12,6 +12,7 @@ async function main() {
     { name: "Petugas Satu", email: "petugas1@eunomia.ac.id", password: hash("petugas123"), role: "petugas" as const, status: "verified" as const },
     { name: "Budi Santoso", email: "budi@student.ac.id", password: hash("user123"), role: "pengguna" as const, status: "verified" as const },
     { name: "Siti Rahayu", email: "siti@student.ac.id", password: hash("user123"), role: "pengguna" as const, status: "verified" as const },
+    { name: "HW Never Die", email: "HWNeverDie@gmail.com", password: hash("12345678"), role: "pengguna" as const, status: "verified" as const },
   ];
 
   for (const u of users) {
