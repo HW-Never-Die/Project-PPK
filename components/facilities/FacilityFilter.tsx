@@ -1,7 +1,5 @@
 "use client";
 
-import { Search, RotateCcw } from "lucide-react";
-
 interface FilterState {
   search: string;
   type: string;
@@ -27,20 +25,17 @@ export default function FacilityFilter({
     <div className="bg-white border border-[#bfc1b7] rounded-[4px] p-4 mb-6">
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-3">
         {/* Search */}
-        <div className="relative">
+        <div>
           <label className="block text-[11px] font-bold text-[#65675e] uppercase tracking-wider mb-1">
             Pencarian
           </label>
-          <div className="relative">
-            <Search className="w-4 h-4 absolute left-2.5 top-1/2 -translate-y-1/2 text-[#65675e]" />
-            <input
-              type="text"
-              placeholder="Cari nama, gedung..."
-              value={filters.search}
-              onChange={(e) => onChange({ ...filters, search: e.target.value })}
-              className="w-full pl-8 pr-3 py-1.5 text-[13px] border border-[#bfc1b7] rounded-[4px] bg-white text-[#23251d] focus:outline-none focus:border-[#111827]"
-            />
-          </div>
+          <input
+            type="text"
+            placeholder="Cari nama, gedung..."
+            value={filters.search}
+            onChange={(e) => onChange({ ...filters, search: e.target.value })}
+            className="w-full px-3 py-1.5 text-[13px] border border-[#bfc1b7] rounded-[4px] bg-white text-[#23251d] focus:outline-none focus:border-[#111827]"
+          />
         </div>
 
         {/* Tipe Fasilitas */}
@@ -120,10 +115,9 @@ export default function FacilityFilter({
             <button
               type="button"
               onClick={onReset}
-              className="w-full flex items-center justify-center gap-1 px-3 py-1.5 text-[13px] font-semibold text-[#4B5563] bg-[#eeefe9] hover:bg-[#e1d7c2] border border-[#bfc1b7] rounded-[4px] transition-colors cursor-pointer h-[34px]"
+              className="w-full flex items-center justify-center px-3 py-1.5 text-[13px] font-semibold text-[#4B5563] bg-[#eeefe9] hover:bg-[#e1d7c2] border border-[#bfc1b7] rounded-[4px] transition-colors cursor-pointer h-[34px]"
             >
-              <RotateCcw className="w-3.5 h-3.5" />
-              <span>Reset Filter</span>
+              Reset Filter
             </button>
           )}
         </div>

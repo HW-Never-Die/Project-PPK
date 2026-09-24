@@ -16,32 +16,10 @@ import {
 export default function Home() {
   const { user } = useAuth();
 
-  const getDashboardHref = () => {
-    if (!user) return "/login";
-    if (user.role === "admin") return "/admin";
-    if (user.role === "petugas") return "/petugas";
-    return "/pengguna/laporan";
-  };
-
   return (
-    <main className="flex-1 flex flex-col items-center justify-start py-8 px-4 sm:px-6 max-w-6xl mx-auto w-full">
-      {/* Hero Application Window (PostHog Style) */}
+    <main className="flex-1 flex flex-col items-center justify-center py-10 px-4 sm:px-6 max-w-6xl mx-auto w-full">
+      {/* Hero Application Window */}
       <div className="w-full bg-white border border-[#bfc1b7] rounded-[6px] shadow-sm overflow-hidden mb-8">
-        {/* Window Title Bar */}
-        <div className="bg-[#fdfdf8] border-b border-[#bfc1b7] px-4 py-2.5 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <span className="w-2.5 h-2.5 rounded-full bg-[#f54e00]/70 inline-block" />
-            <span className="w-2.5 h-2.5 rounded-full bg-[#eb9d2a]/70 inline-block" />
-            <span className="w-2.5 h-2.5 rounded-full bg-[#6aa84f]/70 inline-block" />
-            <span className="text-[12px] font-mono text-[#65675e] ml-2">
-              fsm-undip.ac.id/eunomia
-            </span>
-          </div>
-          <span className="text-[11px] font-semibold text-[#65675e] uppercase tracking-wider">
-            Sistem Informasi Fasilitas Terpadu
-          </span>
-        </div>
-
         {/* Hero Body */}
         <div className="p-6 md:p-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
           <div className="lg:col-span-7 space-y-5">
@@ -68,15 +46,7 @@ export default function Home() {
                 <span>Lihat Fasilitas</span>
                 <ArrowRight className="w-4 h-4" />
               </Link>
-              {user ? (
-                <Link
-                  href={getDashboardHref()}
-                  className="inline-flex items-center justify-center gap-2 bg-white hover:bg-[#fdfdf8] text-[#23251d] border border-[#bfc1b7] font-bold text-sm px-5 py-2.5 rounded-[4px] transition-colors"
-                >
-                  <span>Buka Dashboard</span>
-                  <ArrowRight className="w-4 h-4" />
-                </Link>
-              ) : (
+              {!user && (
                 <Link
                   href="/login"
                   className="inline-flex items-center justify-center gap-2 bg-white hover:bg-[#fdfdf8] text-[#23251d] border border-[#bfc1b7] font-semibold text-sm px-5 py-2.5 rounded-[4px] transition-colors"
