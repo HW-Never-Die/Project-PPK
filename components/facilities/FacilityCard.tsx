@@ -1,9 +1,11 @@
 "use client";
 
 import Image from "next/image";
-import { MapPin, Users, Calendar, Sparkles } from "lucide-react";
+import Link from "next/link";
+import { MapPin, Users, Calendar, Sparkles, ClipboardList } from "lucide-react";
 import TagPill from "@/components/ui/TagPill";
 import { formatFacilityType } from "@/lib/utils";
+import { useAuth } from "@/components/AuthProvider";
 import { Facility } from "@/types";
 
 interface FacilityCardProps {
@@ -15,6 +17,7 @@ export default function FacilityCard({
   facility,
   onCheckAvailability,
 }: FacilityCardProps) {
+  const { user } = useAuth();
   // Fallback gambar seragam sesuai tipe jika kosong atau tidak valid
   const defaultImages: Record<string, string> = {
     ruang_kelas: "/images/facilities/ruang-kelas.webp",
@@ -79,7 +82,7 @@ export default function FacilityCard({
         </div>
       </div>
 
-      <div className="p-4 pt-0">
+      <div className="p-4 pt-0 space-y-2">
         <button
           type="button"
           onClick={() => onCheckAvailability?.(facility)}
@@ -88,6 +91,15 @@ export default function FacilityCard({
           <Calendar className="w-4 h-4" />
           <span>Cek Ketersediaan Slot</span>
         </button>
+        {user?.role === "pengguna" && (
+          <Link
+            href={`/pengguna/reservasi/buat?facilityId=${facility.id}`}
+            className="w-full flex items-center justify-center gap-1.5 border border-[#bfc1b7] hover:bg-[#fdfdf8] text-[#23251d] font-semibold text-[13px] py-2 px-3 rounded-[4px] transition-colors"
+          >
+            <ClipboardList className="w-4 h-4" />
+            <span>Reservasi Sekarang</span>
+          </Link>
+        )}
       </div>
     </div>
   );

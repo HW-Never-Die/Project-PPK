@@ -71,6 +71,16 @@ export default function Navbar() {
               {user?.role === "pengguna" && (
                 <>
                   <Link
+                    href="/pengguna/reservasi"
+                    className={`px-2.5 py-1.5 text-[13px] font-semibold rounded transition-colors whitespace-nowrap ${
+                      pathname.startsWith("/pengguna/reservasi")
+                        ? "bg-black/10 text-[#111827]"
+                        : "text-[#23251d] hover:bg-black/5"
+                    }`}
+                  >
+                    Reservasi
+                  </Link>
+                  <Link
                     href="/pengguna/laporan"
                     className={`px-2.5 py-1.5 text-[13px] font-semibold rounded transition-colors whitespace-nowrap ${
                       pathname === "/pengguna/laporan"
@@ -95,6 +105,16 @@ export default function Navbar() {
 
               {user?.role === "petugas" && (
                 <>
+                  <Link
+                    href="/petugas/reservasi"
+                    className={`px-2.5 py-1.5 text-[13px] font-semibold rounded transition-colors whitespace-nowrap ${
+                      pathname.startsWith("/petugas/reservasi")
+                        ? "bg-black/10 text-[#111827]"
+                        : "text-[#23251d] hover:bg-black/5"
+                    }`}
+                  >
+                    Kelola Reservasi
+                  </Link>
                   <Link
                     href="/petugas/laporan"
                     className={`px-2.5 py-1.5 text-[13px] font-semibold rounded transition-colors whitespace-nowrap ${

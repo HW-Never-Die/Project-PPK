@@ -1,8 +1,14 @@
+"use client";
+
 import ReservationForm from "@/components/reservations/ReservationForm";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
+import { useSearchParams } from "next/navigation";
 
 export default function BuatReservasiPage() {
+  const searchParams = useSearchParams();
+  const facilityId = searchParams.get("facilityId");
+
   return (
     <div style={{ maxWidth: "680px" }}>
       <div style={{ marginBottom: "20px" }}>
@@ -36,7 +42,7 @@ export default function BuatReservasiPage() {
           Pilih fasilitas, tanggal, dan slot waktu yang tersedia
         </p>
       </div>
-      <ReservationForm />
+      <ReservationForm initialFacilityId={facilityId ? Number(facilityId) : undefined} />
     </div>
   );
 }
