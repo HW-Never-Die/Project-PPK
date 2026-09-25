@@ -397,7 +397,7 @@ export default function ReservationForm({ initialFacilityId }: { initialFacility
           value={purpose}
           onChange={(e) => setPurpose(e.target.value)}
           rows={3}
-          placeholder="Jelaskan tujuan penggunaan fasilitas..."
+          placeholder="Jelaskan tujuan penggunaan fasilitas (Minimal 10 karakter)"
           style={{ ...inputStyle, resize: "vertical" }}
         />
       </div>

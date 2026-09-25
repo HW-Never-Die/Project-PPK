@@ -61,7 +61,7 @@ export async function PATCH(request: NextRequest, context: RouteContext) {
     );
   }
 
-  const { action, cancelReason } = parsed.data;
+  const { action, cancelReason, rejectReason } = parsed.data;
 
   const reservation = await prisma.reservation.findUnique({
     where: { id: reservationId },
@@ -140,11 +140,18 @@ export async function PATCH(request: NextRequest, context: RouteContext) {
         { status: 400 }
       );
     }
+    if (!rejectReason) {
+      return NextResponse.json(
+        { error: "Alasan penolakan wajib diisi" },
+        { status: 400 }
+      );
+    }
 
     const updated = await prisma.reservation.update({
       where: { id: reservationId },
       data: {
         status: "rejected",
+        rejectReason,
         processedBy: session.userId,
         processedAt: new Date(),
       },
