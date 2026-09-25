@@ -57,6 +57,7 @@ export type Reservation = {
   purpose: string;
   status: ReservationStatus;
   cancelReason?: string | null;
+  rejectReason?: string | null;
   processedBy?: number | null;
   processedAt?: Date | string | null;
   createdAt?: Date | string;

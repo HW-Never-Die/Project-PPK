@@ -61,6 +61,16 @@ export async function POST(request: NextRequest) {
 
   const { facilityId, date, startTime, endTime, purpose } = parsed.data;
 
+  const pendingCount = await prisma.reservation.count({
+    where: { userId: session.userId, status: "pending" },
+  });
+  if (pendingCount >= 3) {
+    return NextResponse.json(
+      { error: "Anda sudah memiliki 3 pengajuan reservasi yang masih menunggu. Harap tunggu hingga salah satu diproses." },
+      { status: 400 }
+    );
+  }
+
   const facility = await prisma.facility.findUnique({ where: { id: facilityId } });
   if (!facility) {
     return NextResponse.json({ error: "Fasilitas tidak ditemukan" }, { status: 404 });

@@ -12,6 +12,7 @@ type Reservation = {
   purpose: string;
   status: "pending" | "approved" | "rejected" | "cancelled";
   cancelReason: string | null;
+  rejectReason: string | null;
   createdAt: string;
   user?: { id: number; name: string; email: string };
   facility: { id: number; name: string; type: string; location: string };
@@ -86,6 +87,8 @@ export default function ReservationTable({ reservations, mode, onAction }: Props
   const [actionLoading, setActionLoading] = useState<number | null>(null);
   const [cancelModal, setCancelModal] = useState<number | null>(null);
   const [cancelReason, setCancelReason] = useState("");
+  const [rejectModal, setRejectModal] = useState<number | null>(null);
+  const [rejectReason, setRejectReason] = useState("");
   const [detailModal, setDetailModal] = useState<Reservation | null>(null);
   const [error, setError] = useState("");
 
@@ -97,10 +100,14 @@ export default function ReservationTable({ reservations, mode, onAction }: Props
     setActionLoading(id);
     setError("");
     try {
+      const body: Record<string, unknown> = { action };
+      if (action === "cancel") body.cancelReason = reason;
+      if (action === "reject") body.rejectReason = reason;
+
       const res = await fetch(`/api/reservations/${id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ action, cancelReason: reason }),
+        body: JSON.stringify(body),
       });
 
       const data = await res.json();
@@ -112,6 +119,8 @@ export default function ReservationTable({ reservations, mode, onAction }: Props
 
       setCancelModal(null);
       setCancelReason("");
+      setRejectModal(null);
+      setRejectReason("");
       onAction?.();
     } catch {
       setError("Kesalahan jaringan");
@@ -230,7 +239,7 @@ export default function ReservationTable({ reservations, mode, onAction }: Props
                           <button
                             type="button"
                             disabled={actionLoading === r.id}
-                            onClick={() => handleAction(r.id, "reject")}
+                            onClick={() => setRejectModal(r.id)}
                             style={{
                               ...smallBtnStyle,
                               backgroundColor: "transparent",
@@ -404,6 +413,126 @@ export default function ReservationTable({ reservations, mode, onAction }: Props
         </div>
       )}
 
+      {rejectModal && (
+        <div
+          style={{
+            position: "fixed",
+            inset: 0,
+            backgroundColor: "rgba(0,0,0,0.25)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 50,
+          }}
+        >
+          <div
+            style={{
+              backgroundColor: "#ffffff",
+              border: "1px solid #bfc1b7",
+              borderRadius: "6px",
+              padding: "24px",
+              width: "100%",
+              maxWidth: "420px",
+            }}
+          >
+            <h2
+              style={{
+                fontSize: "16px",
+                fontWeight: 600,
+                color: "#23251d",
+                marginBottom: "12px",
+              }}
+            >
+              Tolak Reservasi
+            </h2>
+            <div
+              style={{
+                padding: "8px 12px",
+                backgroundColor: "rgba(245,78,0,0.08)",
+                border: "1px solid rgba(245,78,0,0.25)",
+                borderRadius: "4px",
+                color: "#4d4f46",
+                fontSize: "13px",
+                marginBottom: "12px",
+              }}
+            >
+              Berikan alasan penolakan agar pemohon dapat mengetahui penyebab pengajuannya ditolak.
+            </div>
+            <div>
+              <label
+                style={{
+                  display: "block",
+                  fontSize: "13px",
+                  fontWeight: 500,
+                  color: "#4d4f46",
+                  marginBottom: "4px",
+                  fontFamily: "'IBM Plex Sans Variable', sans-serif",
+                }}
+              >
+                Alasan Penolakan
+              </label>
+              <textarea
+                value={rejectReason}
+                onChange={(e) => setRejectReason(e.target.value)}
+                rows={3}
+                placeholder="Jelaskan alasan penolakan reservasi..."
+                style={{
+                  width: "100%",
+                  padding: "8px 10px",
+                  border: "1px solid #bfc1b7",
+                  borderRadius: "4px",
+                  fontSize: "14px",
+                  color: "#23251d",
+                  backgroundColor: "#ffffff",
+                  fontFamily: "'IBM Plex Sans Variable', sans-serif",
+                  resize: "vertical",
+                  boxSizing: "border-box",
+                }}
+              />
+            </div>
+            <div style={{ display: "flex", justifyContent: "flex-end", gap: "8px", marginTop: "12px" }}>
+              <button
+                type="button"
+                onClick={() => {
+                  setRejectModal(null);
+                  setRejectReason("");
+                }}
+                style={{
+                  padding: "6px 12px",
+                  border: "1px solid #bfc1b7",
+                  borderRadius: "4px",
+                  backgroundColor: "transparent",
+                  color: "#4d4f46",
+                  fontSize: "13px",
+                  cursor: "pointer",
+                  fontFamily: "'IBM Plex Sans Variable', sans-serif",
+                }}
+              >
+                Batal
+              </button>
+              <button
+                type="button"
+                disabled={rejectReason.length < 5 || actionLoading !== null}
+                onClick={() => handleAction(rejectModal, "reject", rejectReason)}
+                style={{
+                  padding: "6px 12px",
+                  border: "none",
+                  borderRadius: "4px",
+                  backgroundColor: rejectReason.length < 5 || actionLoading !== null ? "#9ea096" : "#f54e00",
+                  color: "#ffffff",
+                  fontSize: "13px",
+                  fontWeight: 500,
+                  cursor: rejectReason.length < 5 || actionLoading !== null ? "not-allowed" : "pointer",
+                  fontFamily: "'IBM Plex Sans Variable', sans-serif",
+                }}
+              >
+                {actionLoading ? "Memproses..." : "Konfirmasi Penolakan"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {detailModal && (
         <div
           style={{
@@ -463,6 +592,9 @@ export default function ReservationTable({ reservations, mode, onAction }: Props
               )}
               {detailModal.cancelReason && (
                 <DetailRow label="Alasan Batal" value={detailModal.cancelReason} />
+              )}
+              {detailModal.rejectReason && (
+                <DetailRow label="Alasan Ditolak" value={detailModal.rejectReason} />
               )}
               <DetailRow label="Diajukan" value={formatDate(detailModal.createdAt)} />
             </div>

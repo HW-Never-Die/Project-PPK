@@ -64,6 +64,7 @@ export const createReservationSchema = z
 export const updateReservationSchema = z.object({
   action: z.enum(["approve", "reject", "cancel"]),
   cancelReason: z.string().min(5, "Alasan pembatalan minimal 5 karakter").optional(),
+  rejectReason: z.string().min(5, "Alasan penolakan minimal 5 karakter").optional(),
 });
 
 export type CreateReservationInput = z.infer<typeof createReservationSchema>;
