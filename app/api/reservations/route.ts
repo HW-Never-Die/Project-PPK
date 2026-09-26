@@ -90,7 +90,7 @@ export async function POST(request: NextRequest) {
     where: {
       facilityId,
       date: dateDt,
-      status: { in: ["pending", "approved"] },
+      status: "approved",
       startTime: { lt: endDt },
       endTime: { gt: startDt },
     },

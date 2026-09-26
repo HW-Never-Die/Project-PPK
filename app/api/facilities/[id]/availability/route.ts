@@ -46,7 +46,7 @@ export async function GET(
   const reservations = await prisma.reservation.findMany({
     where: {
       facilityId,
-      status: { in: ["pending", "approved"] },
+      status: "approved",
       date: {
         gte: targetDateStart,
         lte: targetDateEnd,
