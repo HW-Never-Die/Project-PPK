@@ -236,6 +236,13 @@ export async function PATCH(request: NextRequest, context: RouteContext) {
       );
     }
 
+    if (reservation.status === "approved" && !cancelReason) {
+      return NextResponse.json(
+        { error: "Alasan pembatalan wajib diisi untuk reservasi yang sudah disetujui" },
+        { status: 400 }
+      );
+    }
+
     const now = new Date();
     const nowWIB = new Date(now.getTime() + 7 * 60 * 60 * 1000);
     const resDateStr = reservation.date.toISOString().split("T")[0]!;
