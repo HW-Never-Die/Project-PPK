@@ -124,6 +124,16 @@ export default function ReservationTable({ reservations, mode, onAction }: Props
   const [detailModal, setDetailModal] = useState<Reservation | null>(null);
   const [error, setError] = useState("");
 
+  const canUserCancel = (r: Reservation): boolean => {
+    const now = new Date();
+    const wib = new Date(now.getTime() + 7 * 60 * 60 * 1000);
+    const todayStr = wib.toISOString().split("T")[0]!;
+    const todayDate = new Date(todayStr + "T00:00:00.000Z");
+    const resDate = new Date(new Date(r.date).toISOString().split("T")[0]! + "T00:00:00.000Z");
+    const diff = Math.floor((resDate.getTime() - todayDate.getTime()) / (1000 * 60 * 60 * 24));
+    return diff >= 3;
+  };
+
   const handleAction = async (
     id: number,
     action: "approve" | "reject" | "cancel",
@@ -299,7 +309,7 @@ export default function ReservationTable({ reservations, mode, onAction }: Props
                         </button>
                       )}
 
-                      {mode === "pengguna" && r.status === "pending" && (
+                      {mode === "pengguna" && r.status === "pending" && canUserCancel(r) && (
                           <button
                             type="button"
                             disabled={actionLoading === r.id}
@@ -315,7 +325,7 @@ export default function ReservationTable({ reservations, mode, onAction }: Props
                           </button>
                       )}
 
-                      {mode === "pengguna" && r.status === "approved" && (
+                      {mode === "pengguna" && r.status === "approved" && canUserCancel(r) && (
                           <button
                             type="button"
                             onClick={() => setCancelModal(r.id)}

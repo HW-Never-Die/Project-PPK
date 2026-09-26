@@ -216,7 +216,12 @@ export default function ReservationForm({ initialFacilityId }: { initialFacility
     }
   };
 
-  const todayStr = new Date().toISOString().split("T")[0];
+  const minDateStr = (() => {
+    const now = new Date();
+    const wib = new Date(now.getTime() + 7 * 60 * 60 * 1000);
+    wib.setUTCDate(wib.getUTCDate() + 3);
+    return wib.toISOString().split("T")[0];
+  })();
 
   return (
     <form
@@ -282,7 +287,7 @@ export default function ReservationForm({ initialFacilityId }: { initialFacility
           <input
             type="date"
             value={date}
-            min={todayStr}
+            min={minDateStr}
             onChange={(e) => handleDateChange(e.target.value)}
             style={inputStyle}
           />
