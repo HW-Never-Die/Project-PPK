@@ -165,8 +165,13 @@ export default function ReservationForm({ initialFacilityId }: { initialFacility
     setError("");
     setSuccess("");
 
-    if (!facilityId || !date || selectedSlots.length === 0 || !purpose) {
-      setError("Lengkapi semua field");
+    const missing: string[] = [];
+    if (!facilityId) missing.push("Fasilitas");
+    if (!date) missing.push("Tanggal");
+    if (selectedSlots.length === 0) missing.push("Slot Waktu");
+    if (!purpose || purpose.trim().length < 10) missing.push("Tujuan Penggunaan");
+    if (missing.length > 0) {
+      setError("Lengkapi " + missing.join(" dan ") + " yang ingin diajukan");
       return;
     }
 
@@ -392,7 +397,14 @@ export default function ReservationForm({ initialFacilityId }: { initialFacility
       </div>
 
       <div>
-        <label style={labelStyle}>Tujuan Penggunaan</label>
+        <label style={{ ...labelStyle, display: "flex", alignItems: "center", gap: "8px" }}>
+          Tujuan Penggunaan
+          {purpose.length > 0 && purpose.trim().length < 10 && (
+            <span style={{ fontSize: "11px", fontWeight: 400, color: "#f54e00" }}>
+              (Minimal 10 Karakter)
+            </span>
+          )}
+        </label>
         <textarea
           value={purpose}
           onChange={(e) => setPurpose(e.target.value)}

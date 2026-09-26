@@ -13,6 +13,7 @@ type Reservation = {
   status: "pending" | "approved" | "rejected" | "cancelled";
   cancelReason: string | null;
   rejectReason: string | null;
+  processedAt: string | null;
   createdAt: string;
   user?: { id: number; name: string; email: string };
   facility: { id: number; name: string; type: string; location: string };
@@ -81,6 +82,37 @@ const smallBtnStyle: React.CSSProperties = {
   fontWeight: 500,
   cursor: "pointer",
   fontFamily: "'IBM Plex Sans Variable', sans-serif",
+};
+
+function formatDateTime(iso: string): string {
+  try {
+    const d = new Date(iso);
+    return d.toLocaleDateString("id-ID", {
+      weekday: "short",
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      timeZone: "Asia/Jakarta",
+    });
+  } catch {
+    return iso;
+  }
+}
+
+const statusLabel: Record<string, string> = {
+  pending: "Menunggu",
+  approved: "Disetujui",
+  rejected: "Ditolak",
+  cancelled: "Dibatalkan",
+};
+
+const statusColor: Record<string, { bg: string; text: string; border: string }> = {
+  pending: { bg: "rgba(235,157,42,0.1)", text: "#b27d00", border: "rgba(235,157,42,0.3)" },
+  approved: { bg: "rgba(106,168,79,0.1)", text: "#3d7a1c", border: "rgba(106,168,79,0.3)" },
+  rejected: { bg: "rgba(245,78,0,0.08)", text: "#f54e00", border: "rgba(245,78,0,0.25)" },
+  cancelled: { bg: "rgba(158,160,150,0.1)", text: "#65675e", border: "rgba(158,160,150,0.3)" },
 };
 
 export default function ReservationTable({ reservations, mode, onAction }: Props) {
@@ -533,7 +565,10 @@ export default function ReservationTable({ reservations, mode, onAction }: Props
         </div>
       )}
 
-      {detailModal && (
+      {detailModal && (() => {
+        const sc = statusColor[detailModal.status] || statusColor.pending;
+        const isProcessed = detailModal.status !== "pending";
+        return (
         <div
           style={{
             position: "fixed",
@@ -549,16 +584,27 @@ export default function ReservationTable({ reservations, mode, onAction }: Props
             style={{
               backgroundColor: "#ffffff",
               border: "1px solid #bfc1b7",
-              borderRadius: "6px",
-              padding: "24px",
+              borderRadius: "8px",
               width: "100%",
-              maxWidth: "480px",
+              maxWidth: "520px",
+              overflow: "hidden",
             }}
           >
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
-              <h2 style={{ fontSize: "16px", fontWeight: 600, color: "#23251d" }}>
-                Detail Reservasi #{detailModal.id}
-              </h2>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                padding: "16px 24px",
+                borderBottom: "1px solid #eeefe9",
+              }}
+            >
+              <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                <h2 style={{ fontSize: "16px", fontWeight: 600, color: "#23251d", margin: 0 }}>
+                  Reservasi #{detailModal.id}
+                </h2>
+                <TagPill status={detailModal.status} />
+              </div>
               <button
                 type="button"
                 onClick={() => setDetailModal(null)}
@@ -574,53 +620,126 @@ export default function ReservationTable({ reservations, mode, onAction }: Props
                 ✕
               </button>
             </div>
-            <div style={{ display: "flex", flexDirection: "column", gap: "10px", fontSize: "14px" }}>
-              <DetailRow label="Fasilitas" value={detailModal.facility.name} />
-              <DetailRow label="Lokasi" value={detailModal.facility.location} />
-              <DetailRow label="Tanggal" value={formatDate(detailModal.date)} />
-              <DetailRow
-                label="Waktu"
-                value={`${formatTime(detailModal.startTime)} - ${formatTime(detailModal.endTime)}`}
-              />
-              <DetailRow label="Tujuan" value={detailModal.purpose} />
-              <DetailRow label="Status" value={detailModal.status} />
+
+            <div style={{ padding: "20px 24px", display: "flex", flexDirection: "column", gap: "16px" }}>
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "1fr 1fr",
+                  gap: "12px",
+                }}
+              >
+                <DetailCell label="Fasilitas" value={detailModal.facility.name} />
+                <DetailCell label="Lokasi" value={detailModal.facility.location} />
+                <DetailCell label="Tanggal" value={formatDate(detailModal.date)} />
+                <DetailCell
+                  label="Waktu"
+                  value={`${formatTime(detailModal.startTime)} – ${formatTime(detailModal.endTime)}`}
+                  mono
+                />
+              </div>
+
+              <div
+                style={{
+                  backgroundColor: "#fdfdf8",
+                  border: "1px solid #eeefe9",
+                  borderRadius: "6px",
+                  padding: "12px",
+                }}
+              >
+                <div style={{ fontSize: "11px", fontWeight: 600, color: "#65675e", marginBottom: "4px", textTransform: "uppercase", letterSpacing: "0.5px" }}>
+                  Tujuan Penggunaan
+                </div>
+                <div style={{ fontSize: "13px", color: "#23251d", lineHeight: "1.5" }}>
+                  {detailModal.purpose}
+                </div>
+              </div>
+
               {detailModal.user && (
-                <DetailRow label="Pemohon" value={`${detailModal.user.name} (${detailModal.user.email})`} />
+                <DetailCell label="Pemohon" value={`${detailModal.user.name} (${detailModal.user.email})`} />
               )}
-              {detailModal.processor && (
-                <DetailRow label="Diproses oleh" value={detailModal.processor.name} />
+
+              <div style={{ borderTop: "1px solid #eeefe9", paddingTop: "12px" }}>
+                <div
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "1fr 1fr",
+                    gap: "12px",
+                  }}
+                >
+                  <DetailCell label="Diajukan pada" value={formatDateTime(detailModal.createdAt)} />
+                  {isProcessed && detailModal.processedAt && (
+                    <DetailCell
+                      label={
+                        detailModal.status === "approved"
+                          ? "Disetujui pada"
+                          : detailModal.status === "rejected"
+                            ? "Ditolak pada"
+                            : "Dibatalkan pada"
+                      }
+                      value={formatDateTime(detailModal.processedAt)}
+                    />
+                  )}
+                </div>
+                {isProcessed && detailModal.processor && (
+                  <div style={{ marginTop: "12px" }}>
+                    <DetailCell label="Diproses oleh" value={detailModal.processor.name} />
+                  </div>
+                )}
+              </div>
+
+              {(detailModal.cancelReason || detailModal.rejectReason) && (
+                <div
+                  style={{
+                    backgroundColor: sc.bg,
+                    border: `1px solid ${sc.border}`,
+                    borderRadius: "6px",
+                    padding: "12px",
+                  }}
+                >
+                  <div style={{ fontSize: "11px", fontWeight: 600, color: sc.text, marginBottom: "4px", textTransform: "uppercase", letterSpacing: "0.5px" }}>
+                    {detailModal.rejectReason ? "Alasan Penolakan" : "Alasan Pembatalan"}
+                  </div>
+                  <div style={{ fontSize: "13px", color: "#23251d", lineHeight: "1.5" }}>
+                    {detailModal.rejectReason || detailModal.cancelReason}
+                  </div>
+                </div>
               )}
-              {detailModal.cancelReason && (
-                <DetailRow label="Alasan Batal" value={detailModal.cancelReason} />
-              )}
-              {detailModal.rejectReason && (
-                <DetailRow label="Alasan Ditolak" value={detailModal.rejectReason} />
-              )}
-              <DetailRow label="Diajukan" value={formatDate(detailModal.createdAt)} />
             </div>
           </div>
         </div>
-      )}
+        );
+      })()}
     </>
   );
 }
 
-function DetailRow({ label, value }: { label: string; value: string }) {
+function DetailCell({ label, value, mono }: { label: string; value: string; mono?: boolean }) {
   return (
-    <div style={{ display: "flex", gap: "12px" }}>
-      <span
+    <div>
+      <div
         style={{
-          width: "110px",
-          flexShrink: 0,
-          fontSize: "13px",
+          fontSize: "11px",
           fontWeight: 500,
-          color: "#65675e",
+          color: "#9ea096",
+          marginBottom: "2px",
           fontFamily: "'IBM Plex Sans Variable', sans-serif",
         }}
       >
         {label}
-      </span>
-      <span style={{ color: "#23251d" }}>{value}</span>
+      </div>
+      <div
+        style={{
+          fontSize: "13px",
+          color: "#23251d",
+          fontWeight: 500,
+          fontFamily: mono
+            ? "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace"
+            : "'IBM Plex Sans Variable', sans-serif",
+        }}
+      >
+        {value}
+      </div>
     </div>
   );
 }
