@@ -100,6 +100,7 @@ model Reservation {
   purpose      String            @db.Text
   status       ReservationStatus @default(pending)
   cancelReason String?           @map("cancel_reason") @db.Text
+  rejectReason String?           @map("reject_reason") @db.Text
   processedBy  Int?              @map("processed_by")
   processedAt  DateTime?         @map("processed_at")
   createdAt    DateTime          @default(now()) @map("created_at")

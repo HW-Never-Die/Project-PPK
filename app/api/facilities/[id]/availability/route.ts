@@ -43,7 +43,6 @@ export async function GET(
   const targetDateStart = new Date(`${dateStr}T00:00:00.000Z`);
   const targetDateEnd = new Date(`${dateStr}T23:59:59.999Z`);
 
-  // Approved reservations on this date for this facility
   const reservations = await prisma.reservation.findMany({
     where: {
       facilityId,

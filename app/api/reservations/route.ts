@@ -1,19 +1,19 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
-import { getSessionUser } from "@/lib/auth-mock";
+import { getSession } from "@/lib/auth";
 import { createReservationSchema } from "@/lib/validations/reservation";
 
 function timeStringToDate(time: string): Date {
   const [h, m] = time.split(":").map(Number);
-  return new Date(1970, 0, 1, h, m, 0);
+  return new Date(Date.UTC(1970, 0, 1, h, m, 0));
 }
 
 export async function GET(request: NextRequest) {
-  const user = await getSessionUser();
-  if (!user) {
+  const session = await getSession();
+  if (!session) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
-  if (user.role !== "petugas" && user.role !== "admin") {
+  if (session.role !== "petugas" && session.role !== "admin") {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
@@ -39,11 +39,11 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
-  const user = await getSessionUser();
-  if (!user) {
+  const session = await getSession();
+  if (!session) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
-  if (user.role !== "pengguna") {
+  if (session.role !== "pengguna") {
     return NextResponse.json(
       { error: "Hanya pengguna yang dapat mengajukan reservasi" },
       { status: 403 }
@@ -61,6 +61,16 @@ export async function POST(request: NextRequest) {
 
   const { facilityId, date, startTime, endTime, purpose } = parsed.data;
 
+  const pendingCount = await prisma.reservation.count({
+    where: { userId: session.userId, status: "pending" },
+  });
+  if (pendingCount >= 3) {
+    return NextResponse.json(
+      { error: "Anda sudah memiliki 3 pengajuan reservasi yang masih menunggu. Harap tunggu hingga salah satu diproses." },
+      { status: 400 }
+    );
+  }
+
   const facility = await prisma.facility.findUnique({ where: { id: facilityId } });
   if (!facility) {
     return NextResponse.json({ error: "Fasilitas tidak ditemukan" }, { status: 404 });
@@ -72,13 +82,34 @@ export async function POST(request: NextRequest) {
     );
   }
 
+  const startDt = timeStringToDate(startTime);
+  const endDt = timeStringToDate(endTime);
+  const dateDt = new Date(date + "T00:00:00.000Z");
+
+  const conflicting = await prisma.reservation.findFirst({
+    where: {
+      facilityId,
+      date: dateDt,
+      status: "approved",
+      startTime: { lt: endDt },
+      endTime: { gt: startDt },
+    },
+  });
+
+  if (conflicting) {
+    return NextResponse.json(
+      { error: "Slot waktu yang dipilih sudah dipesan oleh pengguna lain" },
+      { status: 409 }
+    );
+  }
+
   const reservation = await prisma.reservation.create({
     data: {
-      userId: user.id,
+      userId: session.userId,
       facilityId,
-      date: new Date(date + "T00:00:00"),
-      startTime: timeStringToDate(startTime),
-      endTime: timeStringToDate(endTime),
+      date: dateDt,
+      startTime: startDt,
+      endTime: endDt,
       purpose,
       status: "pending",
     },

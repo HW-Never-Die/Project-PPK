@@ -1,13 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
-import { getSessionUser } from "@/lib/auth-mock";
+import { getSession } from "@/lib/auth";
 import { updateReservationSchema } from "@/lib/validations/reservation";
 
 type RouteContext = { params: Promise<{ id: string }> };
 
 export async function GET(_request: NextRequest, context: RouteContext) {
-  const user = await getSessionUser();
-  if (!user) {
+  const session = await getSession();
+  if (!session) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -31,8 +31,8 @@ export async function GET(_request: NextRequest, context: RouteContext) {
   }
 
   if (
-    user.role === "pengguna" &&
-    reservation.userId !== user.id
+    session.role === "pengguna" &&
+    reservation.userId !== session.userId
   ) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
@@ -41,8 +41,8 @@ export async function GET(_request: NextRequest, context: RouteContext) {
 }
 
 export async function PATCH(request: NextRequest, context: RouteContext) {
-  const user = await getSessionUser();
-  if (!user) {
+  const session = await getSession();
+  if (!session) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -61,7 +61,7 @@ export async function PATCH(request: NextRequest, context: RouteContext) {
     );
   }
 
-  const { action, cancelReason } = parsed.data;
+  const { action, cancelReason, rejectReason } = parsed.data;
 
   const reservation = await prisma.reservation.findUnique({
     where: { id: reservationId },
@@ -74,7 +74,7 @@ export async function PATCH(request: NextRequest, context: RouteContext) {
 
   // === APPROVE (Petugas/Admin) ===
   if (action === "approve") {
-    if (user.role !== "petugas" && user.role !== "admin") {
+    if (session.role !== "petugas" && session.role !== "admin") {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
     if (reservation.status !== "pending") {
@@ -99,8 +99,11 @@ export async function PATCH(request: NextRequest, context: RouteContext) {
     });
 
     if (conflicting) {
-      const fmt = (d: Date) =>
-        d.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit", hour12: false });
+      const fmt = (d: Date) => {
+        const h = String(d.getUTCHours()).padStart(2, "0");
+        const m = String(d.getUTCMinutes()).padStart(2, "0");
+        return `${h}:${m}`;
+      };
       return NextResponse.json(
         {
           error: "Jadwal bentrok dengan reservasi lain yang sudah disetujui",
@@ -114,13 +117,48 @@ export async function PATCH(request: NextRequest, context: RouteContext) {
       );
     }
 
-    const updated = await prisma.reservation.update({
-      where: { id: reservationId },
-      data: {
-        status: "approved",
-        processedBy: user.id,
-        processedAt: new Date(),
-      },
+    const now = new Date();
+
+    const updated = await prisma.$transaction(async (tx) => {
+      const approved = await tx.reservation.update({
+        where: { id: reservationId },
+        data: {
+          status: "approved",
+          processedBy: session.userId,
+          processedAt: now,
+        },
+      });
+
+      const overlapping = await tx.reservation.findMany({
+        where: {
+          id: { not: reservationId },
+          facilityId: reservation.facilityId,
+          status: "pending",
+          date: reservation.date,
+        },
+        select: { id: true, startTime: true, endTime: true },
+      });
+
+      const resStart = reservation.startTime.getTime();
+      const resEnd = reservation.endTime.getTime();
+      const toReject = overlapping
+        .filter((r) => r.startTime.getTime() < resEnd && r.endTime.getTime() > resStart)
+        .map((r) => r.id);
+
+      if (toReject.length > 0) {
+        await tx.reservation.updateMany({
+          where: { id: { in: toReject } },
+          data: {
+            status: "rejected",
+            rejectReason:
+              "Waktu yang diajukan telah terisi. Silakan ajukan kembali di waktu yang berbeda.",
+            processedBy: session.userId,
+            processedAt: now,
+          },
+        });
+      }
+
+      return approved;
     });
 
     return NextResponse.json({ data: updated });
@@ -128,7 +166,7 @@ export async function PATCH(request: NextRequest, context: RouteContext) {
 
   // === REJECT (Petugas/Admin) ===
   if (action === "reject") {
-    if (user.role !== "petugas" && user.role !== "admin") {
+    if (session.role !== "petugas" && session.role !== "admin") {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
     if (reservation.status !== "pending") {
@@ -137,12 +175,19 @@ export async function PATCH(request: NextRequest, context: RouteContext) {
         { status: 400 }
       );
     }
+    if (!rejectReason) {
+      return NextResponse.json(
+        { error: "Alasan penolakan wajib diisi" },
+        { status: 400 }
+      );
+    }
 
     const updated = await prisma.reservation.update({
       where: { id: reservationId },
       data: {
         status: "rejected",
-        processedBy: user.id,
+        rejectReason,
+        processedBy: session.userId,
         processedAt: new Date(),
       },
     });
@@ -152,7 +197,7 @@ export async function PATCH(request: NextRequest, context: RouteContext) {
 
   // === CANCEL (Pengguna sendiri atau Petugas darurat) ===
   if (action === "cancel") {
-    if (user.role === "petugas" || user.role === "admin") {
+    if (session.role === "petugas" || session.role === "admin") {
       // Petugas: cancel darurat, wajib cancel_reason
       if (!cancelReason) {
         return NextResponse.json(
@@ -172,7 +217,7 @@ export async function PATCH(request: NextRequest, context: RouteContext) {
         data: {
           status: "cancelled",
           cancelReason,
-          processedBy: user.id,
+          processedBy: session.userId,
           processedAt: new Date(),
         },
       });
@@ -181,7 +226,7 @@ export async function PATCH(request: NextRequest, context: RouteContext) {
     }
 
     // Pengguna: cancel milik sendiri
-    if (reservation.userId !== user.id) {
+    if (reservation.userId !== session.userId) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
     if (reservation.status !== "pending" && reservation.status !== "approved") {
@@ -191,12 +236,20 @@ export async function PATCH(request: NextRequest, context: RouteContext) {
       );
     }
 
-    // Cek apakah waktu reservasi sudah lewat
+    if (reservation.status === "approved" && !cancelReason) {
+      return NextResponse.json(
+        { error: "Alasan pembatalan wajib diisi untuk reservasi yang sudah disetujui" },
+        { status: 400 }
+      );
+    }
+
     const now = new Date();
-    const reservationDate = new Date(reservation.date);
-    const [hours, minutes] = [reservation.startTime.getHours(), reservation.startTime.getMinutes()];
-    reservationDate.setHours(hours, minutes, 0, 0);
-    if (reservationDate <= now) {
+    const nowWIB = new Date(now.getTime() + 7 * 60 * 60 * 1000);
+    const resDateStr = reservation.date.toISOString().split("T")[0]!;
+    const resH = reservation.startTime.getUTCHours();
+    const resM = reservation.startTime.getUTCMinutes();
+    const reservationWIB = new Date(`${resDateStr}T${String(resH).padStart(2, "0")}:${String(resM).padStart(2, "0")}:00.000Z`);
+    if (reservationWIB <= nowWIB) {
       return NextResponse.json(
         { error: "Tidak dapat membatalkan reservasi yang waktunya sudah lewat" },
         { status: 400 }

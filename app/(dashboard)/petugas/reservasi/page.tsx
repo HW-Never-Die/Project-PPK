@@ -11,6 +11,8 @@ type Reservation = {
   purpose: string;
   status: "pending" | "approved" | "rejected" | "cancelled";
   cancelReason: string | null;
+  rejectReason: string | null;
+  processedAt: string | null;
   createdAt: string;
   user: { id: number; name: string; email: string };
   facility: { id: number; name: string; type: string; location: string };
