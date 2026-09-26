@@ -299,8 +299,7 @@ export default function ReservationTable({ reservations, mode, onAction }: Props
                         </button>
                       )}
 
-                      {mode === "pengguna" &&
-                        (r.status === "pending" || r.status === "approved") && (
+                      {mode === "pengguna" && r.status === "pending" && (
                           <button
                             type="button"
                             disabled={actionLoading === r.id}
@@ -314,7 +313,22 @@ export default function ReservationTable({ reservations, mode, onAction }: Props
                           >
                             {actionLoading === r.id ? "..." : "Batalkan"}
                           </button>
-                        )}
+                      )}
+
+                      {mode === "pengguna" && r.status === "approved" && (
+                          <button
+                            type="button"
+                            onClick={() => setCancelModal(r.id)}
+                            style={{
+                              ...smallBtnStyle,
+                              backgroundColor: "transparent",
+                              border: "1px solid #f54e00",
+                              color: "#f54e00",
+                            }}
+                          >
+                            Batalkan
+                          </button>
+                      )}
                     </div>
                   </td>
                 </tr>
@@ -354,7 +368,7 @@ export default function ReservationTable({ reservations, mode, onAction }: Props
                 marginBottom: "12px",
               }}
             >
-              Pembatalan Darurat
+              {mode === "petugas" ? "Pembatalan Darurat" : "Batalkan Reservasi"}
             </h2>
             <div
               style={{
@@ -367,8 +381,9 @@ export default function ReservationTable({ reservations, mode, onAction }: Props
                 marginBottom: "12px",
               }}
             >
-              Pembatalan darurat akan membatalkan reservasi yang sudah disetujui.
-              Alasan pembatalan wajib diisi.
+              {mode === "petugas"
+                ? "Pembatalan darurat akan membatalkan reservasi yang sudah disetujui. Alasan pembatalan wajib diisi."
+                : "Anda akan membatalkan reservasi yang sudah disetujui. Alasan pembatalan wajib diisi."}
             </div>
             <div>
               <label
