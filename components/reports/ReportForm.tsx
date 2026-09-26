@@ -179,9 +179,9 @@ export default function ReportForm({ onSuccess }: ReportFormProps) {
           required
         >
           <option value="" disabled>Pilih Fasilitas</option>
-          {facilities.map((f) => (
+          {facilities.map((f, index) => (
             <option key={f.id} value={f.id}>
-              {f.id} - {f.name}
+              {index + 1} - {f.name}
             </option>
           ))}
         </select>
