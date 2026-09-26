@@ -11,6 +11,7 @@ interface Facility {
   location: string;
   capacity: number | null;
   status: string;
+  imageUrl?: string | null;
 }
 
 const typeLabel: Record<string, string> = {
@@ -59,10 +60,10 @@ export default function PetugasFasilitasPage() {
   }
 
   const thStyle: React.CSSProperties = {
-    padding: "8px 12px",
-    textAlign: "left",
+    padding: "10px 14px",
+    textAlign: "center",
     fontSize: "12px",
-    fontWeight: 500,
+    fontWeight: 600,
     color: "#65675e",
     fontFamily: "'IBM Plex Sans Variable', sans-serif",
     borderBottom: "1px solid #bfc1b7",
@@ -70,7 +71,8 @@ export default function PetugasFasilitasPage() {
   };
 
   const tdStyle: React.CSSProperties = {
-    padding: "10px 12px",
+    padding: "12px 14px",
+    textAlign: "center",
     fontSize: "13px",
     color: "#23251d",
     fontFamily: "'IBM Plex Sans Variable', sans-serif",
@@ -126,7 +128,6 @@ export default function PetugasFasilitasPage() {
           <table style={{ width: "100%", borderCollapse: "collapse" }}>
             <thead>
               <tr style={{ backgroundColor: "#fdfdf8" }}>
-                <th style={thStyle}>Foto</th>
                 <th style={thStyle}>Nama Fasilitas</th>
                 <th style={thStyle}>Tipe</th>
                 <th style={thStyle}>Lokasi</th>
@@ -136,19 +137,13 @@ export default function PetugasFasilitasPage() {
               </tr>
             </thead>
             <tbody>
-              {facilities.map((f) => (
+              {facilities.map((f) => {
+                return (
                 <tr key={f.id}>
-                  <td style={tdStyle}>
-                    <img 
-                      src={`https://picsum.photos/seed/${f.id}/100/70`} 
-                      alt="Fasilitas" 
-                      className="rounded object-cover border border-gray-300 w-[100px] h-[70px]"
-                    />
-                  </td>
-                  <td style={tdStyle}>{f.name}</td>
+                  <td style={{ ...tdStyle, fontWeight: 600 }}>{f.name}</td>
                   <td style={tdStyle}>{typeLabel[f.type] ?? f.type}</td>
                   <td style={tdStyle}>{f.location}</td>
-                  <td style={tdStyle}>{f.capacity ?? "—"}</td>
+                  <td style={tdStyle}>{f.capacity ? `${f.capacity} orang` : "—"}</td>
                   <td style={tdStyle}><TagPill status={f.status} /></td>
                   <td style={tdStyle}>
                     {f.status !== "inactive" && (
@@ -177,7 +172,8 @@ export default function PetugasFasilitasPage() {
                     )}
                   </td>
                 </tr>
-              ))}
+                );
+              })}
             </tbody>
           </table>
         </div>

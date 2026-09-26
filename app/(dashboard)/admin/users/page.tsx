@@ -90,6 +90,25 @@ export default function AdminUsersPage() {
     }
   }
 
+  async function handleDeleteUser(userId: number) {
+    setActionLoading(userId);
+    try {
+      const res = await fetch(`/api/users/${userId}`, {
+        method: "DELETE",
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        alert(data.error || "Gagal menghapus user");
+        return;
+      }
+      await fetchUsers();
+    } catch {
+      alert("Terjadi kesalahan jaringan.");
+    } finally {
+      setActionLoading(null);
+    }
+  }
+
   async function handleCreateUser(e: FormEvent) {
     e.preventDefault();
     setFormErrors({});
@@ -170,7 +189,7 @@ export default function AdminUsersPage() {
             key: "actions",
             header: "Aksi",
             render: (row: UserData) => (
-              <div className="flex gap-2">
+              <div className="flex justify-center gap-2">
                 <Button
                   size="sm"
                   variant="primary"
@@ -191,7 +210,36 @@ export default function AdminUsersPage() {
             ),
           },
         ]
-      : []),
+      : [
+          {
+            key: "actions",
+            header: "Aksi",
+            render: (row: UserData) => (
+              <div className="flex justify-center gap-2">
+                {row.role !== "admin" ? (
+                  <Button
+                    size="sm"
+                    variant="danger"
+                    loading={actionLoading === row.id}
+                    onClick={() => {
+                      if (
+                        confirm(
+                          `Yakin ingin menghapus akun "${row.name}"? Data terkait akun ini akan dihapus.`
+                        )
+                      ) {
+                        handleDeleteUser(row.id);
+                      }
+                    }}
+                  >
+                    Hapus
+                  </Button>
+                ) : (
+                  <span className="text-micro text-sage-gray">—</span>
+                )}
+              </div>
+            ),
+          },
+        ]),
   ];
 
   return (

@@ -59,18 +59,45 @@ export async function PATCH(
     return NextResponse.json({ error: "Laporan tidak ditemukan" }, { status: 404 });
   }
 
-  const report = await prisma.report.update({
-    where: { id: reportId },
-    data: {
-      status,
-      resolutionNotes: resolution_notes ?? null,
-      processedBy: mockUser.id,
-      processedAt: new Date(),
-    },
-    include: {
-      facility: { select: { id: true, name: true } },
-      processor: { select: { id: true, name: true } },
-    },
+  const report = await prisma.$transaction(async (tx) => {
+    if (status === "in_progress" && existing.facilityId) {
+      await tx.facility.update({
+        where: { id: existing.facilityId },
+        data: { status: "maintenance" },
+      });
+
+      await tx.reservation.updateMany({
+        where: {
+          facilityId: existing.facilityId,
+          status: "approved",
+        },
+        data: {
+          status: "cancelled",
+          cancelReason: "Fasilitas sedang dalam perbaikan berdasarkan laporan kerusakan.",
+        },
+      });
+    }
+
+    if (status === "resolved" && existing.facilityId) {
+      await tx.facility.update({
+        where: { id: existing.facilityId },
+        data: { status: "active" },
+      });
+    }
+
+    return tx.report.update({
+      where: { id: reportId },
+      data: {
+        status,
+        resolutionNotes: resolution_notes ?? null,
+        processedBy: mockUser.id,
+        processedAt: new Date(),
+      },
+      include: {
+        facility: { select: { id: true, name: true } },
+        processor: { select: { id: true, name: true } },
+      },
+    });
   });
 
   return NextResponse.json({ data: report });

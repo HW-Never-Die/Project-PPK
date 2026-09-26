@@ -1,15 +1,24 @@
 import { cookies } from "next/headers";
+import { getSession } from "@/lib/auth";
 
 export type AuthUser = {
   id: number;
-  name: string;
-  email: string;
+  name?: string;
+  email?: string;
   role: "admin" | "petugas" | "pengguna";
   status: "pending" | "verified" | "rejected";
 };
 
-// ponytail: mock auth — replace with real JWT decode from lib/auth.ts when Zaidan merges
 export async function getSessionUser(): Promise<AuthUser | null> {
+  const session = await getSession();
+  if (session) {
+    return {
+      id: session.userId,
+      role: session.role,
+      status: session.status,
+    };
+  }
+
   const cookieStore = await cookies();
   const token = cookieStore.get("token");
   if (!token) return null;
@@ -18,7 +27,10 @@ export async function getSessionUser(): Promise<AuthUser | null> {
     const payload = JSON.parse(
       Buffer.from(token.value.split(".")[1], "base64").toString()
     );
-    return payload as AuthUser;
+    return {
+      ...payload,
+      id: payload.id ?? payload.userId,
+    } as AuthUser;
   } catch {
     return null;
   }

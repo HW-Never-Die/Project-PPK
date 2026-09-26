@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Download, FileText, FileSpreadsheet, File } from "lucide-react";
+import Papa from "papaparse";
 
 interface PreviewRow {
   [key: string]: string;
@@ -45,14 +46,8 @@ export default function AdminRekapPage() {
       const res = await fetch(`/api/export?format=csv&report=${reportType}&from=${from}&to=${to}`);
       if (!res.ok) throw new Error("Gagal memuat preview");
       const text = await res.text();
-      const lines = text.trim().split("\n");
-      if (lines.length < 1) { setPreview([]); return; }
-      const headers = lines[0]?.split(",").map((h) => h.replace(/"/g, "")) ?? [];
-      const rows: PreviewRow[] = lines.slice(1, 11).map((line) => {
-        const vals = line.split(",").map((v) => v.replace(/"/g, ""));
-        return Object.fromEntries(headers.map((h, i) => [h, vals[i] ?? ""]));
-      });
-      setPreview(rows);
+      const result = Papa.parse<PreviewRow>(text, { header: true, skipEmptyLines: true });
+      setPreview(result.data.slice(0, 10));
     } catch (err) {
       setError(err instanceof Error ? err.message : "Terjadi kesalahan");
     } finally {

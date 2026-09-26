@@ -30,7 +30,7 @@ export default function Table<T>({
               <th
                 key={col.key}
                 className={cn(
-                  "px-4 py-3 text-left font-medium text-olive-char",
+                  "px-4 py-3 text-center font-medium text-olive-char",
                   col.className
                 )}
               >
@@ -58,7 +58,7 @@ export default function Table<T>({
                 {columns.map((col) => (
                   <td
                     key={col.key}
-                    className={cn("px-4 py-3 text-deep-moss", col.className)}
+                    className={cn("px-4 py-3 text-center text-deep-moss", col.className)}
                   >
                     {col.render
                       ? col.render(row)
