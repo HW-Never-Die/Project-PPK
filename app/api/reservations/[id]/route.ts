@@ -117,13 +117,48 @@ export async function PATCH(request: NextRequest, context: RouteContext) {
       );
     }
 
-    const updated = await prisma.reservation.update({
-      where: { id: reservationId },
-      data: {
-        status: "approved",
-        processedBy: session.userId,
-        processedAt: new Date(),
-      },
+    const now = new Date();
+
+    const updated = await prisma.$transaction(async (tx) => {
+      const approved = await tx.reservation.update({
+        where: { id: reservationId },
+        data: {
+          status: "approved",
+          processedBy: session.userId,
+          processedAt: now,
+        },
+      });
+
+      const overlapping = await tx.reservation.findMany({
+        where: {
+          id: { not: reservationId },
+          facilityId: reservation.facilityId,
+          status: "pending",
+          date: reservation.date,
+        },
+        select: { id: true, startTime: true, endTime: true },
+      });
+
+      const resStart = reservation.startTime.getTime();
+      const resEnd = reservation.endTime.getTime();
+      const toReject = overlapping
+        .filter((r) => r.startTime.getTime() < resEnd && r.endTime.getTime() > resStart)
+        .map((r) => r.id);
+
+      if (toReject.length > 0) {
+        await tx.reservation.updateMany({
+          where: { id: { in: toReject } },
+          data: {
+            status: "rejected",
+            rejectReason:
+              "Waktu yang diajukan telah terisi. Silakan ajukan kembali di waktu yang berbeda.",
+            processedBy: session.userId,
+            processedAt: now,
+          },
+        });
+      }
+
+      return approved;
     });
 
     return NextResponse.json({ data: updated });
