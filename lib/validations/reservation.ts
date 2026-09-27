@@ -42,23 +42,12 @@ export const createReservationSchema = z
     (data) => {
       const nowUTC = new Date();
       const nowWIB = new Date(nowUTC.getTime() + 7 * 60 * 60 * 1000);
-      const todayStr = nowWIB.toISOString().split("T")[0]!;
-      return data.date >= todayStr;
+      const minDate = new Date(nowWIB);
+      minDate.setUTCDate(minDate.getUTCDate() + 3);
+      const minDateStr = minDate.toISOString().split("T")[0]!;
+      return data.date >= minDateStr;
     },
-    { message: "Tanggal tidak boleh di masa lalu", path: ["date"] }
-  )
-  .refine(
-    (data) => {
-      const nowUTC = new Date();
-      const nowWIB = new Date(nowUTC.getTime() + 7 * 60 * 60 * 1000);
-      const todayStr = nowWIB.toISOString().split("T")[0]!;
-      if (data.date !== todayStr) return true;
-      const [sh, sm] = data.startTime.split(":").map(Number);
-      const startMins = sh * 60 + sm;
-      const nowMins = nowWIB.getUTCHours() * 60 + nowWIB.getUTCMinutes();
-      return startMins > nowMins;
-    },
-    { message: "Waktu mulai sudah terlewat", path: ["startTime"] }
+    { message: "Reservasi harus diajukan minimal H-3 (3 hari sebelum kegiatan)", path: ["date"] }
   );
 
 export const updateReservationSchema = z.object({

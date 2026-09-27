@@ -245,13 +245,16 @@ export async function PATCH(request: NextRequest, context: RouteContext) {
 
     const now = new Date();
     const nowWIB = new Date(now.getTime() + 7 * 60 * 60 * 1000);
+    const todayStr = nowWIB.toISOString().split("T")[0]!;
     const resDateStr = reservation.date.toISOString().split("T")[0]!;
-    const resH = reservation.startTime.getUTCHours();
-    const resM = reservation.startTime.getUTCMinutes();
-    const reservationWIB = new Date(`${resDateStr}T${String(resH).padStart(2, "0")}:${String(resM).padStart(2, "0")}:00.000Z`);
-    if (reservationWIB <= nowWIB) {
+
+    const todayDate = new Date(todayStr + "T00:00:00.000Z");
+    const resDate = new Date(resDateStr + "T00:00:00.000Z");
+    const diffDays = Math.floor((resDate.getTime() - todayDate.getTime()) / (1000 * 60 * 60 * 24));
+
+    if (diffDays < 3) {
       return NextResponse.json(
-        { error: "Tidak dapat membatalkan reservasi yang waktunya sudah lewat" },
+        { error: "Pembatalan hanya dapat dilakukan maksimal H-3 sebelum tanggal kegiatan" },
         { status: 400 }
       );
     }
