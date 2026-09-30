@@ -72,7 +72,7 @@ export default function PetugasLaporanPage() {
   }
 
   const filterTabs = [
-    { value: "new", label: "Baru" },
+    { value: "new", label: "Menunggu Persetujuan" },
     { value: "in_progress", label: "Diproses" },
     { value: "resolved", label: "Selesai" },
     { value: "rejected", label: "Ditolak" },

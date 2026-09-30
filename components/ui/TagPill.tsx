@@ -16,7 +16,7 @@ export type TagPillVariant =
   | "default";
 
 const labelMap: Record<string, string> = {
-  new: "Baru",
+  new: "Menunggu Persetujuan",
   in_progress: "Diproses",
   resolved: "Selesai",
   rejected: "Ditolak",

@@ -96,7 +96,7 @@ export const REPORT_CATEGORY_LABELS: Record<string, string> = {
 };
 
 export const REPORT_STATUS_LABELS: Record<string, string> = {
-  new: "Baru",
+  new: "Menunggu Persetujuan",
   in_progress: "Sedang Ditangani",
   resolved: "Selesai",
   rejected: "Ditolak",

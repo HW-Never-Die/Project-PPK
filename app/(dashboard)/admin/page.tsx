@@ -58,7 +58,7 @@ export default async function AdminDashboardPage() {
   ];
 
   const statusLabel: Record<string, string> = {
-    new: "Baru",
+    new: "Menunggu Persetujuan",
     in_progress: "Diproses",
     resolved: "Selesai",
     rejected: "Ditolak",

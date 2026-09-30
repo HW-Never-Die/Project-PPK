@@ -93,7 +93,7 @@ export default function RiwayatLaporanPage() {
               fontFamily: "'IBM Plex Sans Variable', sans-serif",
             }}
           >
-            {s === "" ? "Semua" : s === "new" ? "Baru" : s === "in_progress" ? "Diproses" : s === "resolved" ? "Selesai" : "Ditolak"}
+            {s === "" ? "Semua" : s === "new" ? "Menunggu Persetujuan" : s === "in_progress" ? "Diproses" : s === "resolved" ? "Selesai" : "Ditolak"}
           </button>
         ))}
       </div>
