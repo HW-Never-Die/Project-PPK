@@ -34,6 +34,20 @@ export async function POST(req: NextRequest) {
 
   const { facility_id, category, description, photo_url } = parsed.data;
 
+  const activeCount = await prisma.report.count({
+    where: {
+      userId: mockUser.id,
+      status: { in: ["new", "in_progress"] },
+    },
+  });
+
+  if (activeCount >= 3) {
+    return NextResponse.json(
+      { error: "Batas laporan aktif tercapai. Maksimal 3 laporan aktif sekaligus." },
+      { status: 422 }
+    );
+  }
+
   const facility = await prisma.facility.findUnique({ where: { id: facility_id } });
   if (!facility) {
     return NextResponse.json({ error: "Fasilitas tidak ditemukan" }, { status: 404 });
