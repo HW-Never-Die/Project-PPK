@@ -83,22 +83,12 @@ export default function Navbar() {
                   <Link
                     href="/pengguna/laporan"
                     className={`px-2.5 py-1.5 text-[13px] font-semibold rounded transition-colors whitespace-nowrap ${
-                      pathname === "/pengguna/laporan"
+                      pathname.startsWith("/pengguna/laporan")
                         ? "bg-black/10 text-[#111827]"
                         : "text-[#23251d] hover:bg-black/5"
                     }`}
                   >
-                    Riwayat Laporan
-                  </Link>
-                  <Link
-                    href="/pengguna/laporan/buat"
-                    className={`px-2.5 py-1.5 text-[13px] font-semibold rounded transition-colors whitespace-nowrap ${
-                      pathname === "/pengguna/laporan/buat"
-                        ? "bg-black/10 text-[#111827]"
-                        : "text-[#23251d] hover:bg-black/5"
-                    }`}
-                  >
-                    Buat Laporan
+                    Laporan
                   </Link>
                 </>
               )}

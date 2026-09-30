@@ -29,6 +29,8 @@ export default function RiwayatLaporanPage() {
   }, []);
 
   const filtered = filter ? reports.filter((r) => r.status === filter) : reports;
+  const activeCount = reports.filter((r) => r.status === "new" || r.status === "in_progress").length;
+  const canCreate = activeCount < 3;
 
   return (
     <div>
@@ -56,24 +58,34 @@ export default function RiwayatLaporanPage() {
             Riwayat laporan kerusakan yang Anda kirim
           </p>
         </div>
-        <Link
-          href="/pengguna/laporan/buat"
-          style={{
-            display: "inline-flex",
-            alignItems: "center",
-            gap: "6px",
-            padding: "6px 12px",
-            backgroundColor: "#eb9d2a",
-            color: "#23251d",
-            borderRadius: "4px",
-            fontSize: "14px",
-            fontWeight: 500,
-            textDecoration: "none",
-            fontFamily: "'IBM Plex Sans Variable', sans-serif",
-          }}
-        >
-          <Plus size={14} /> Buat Laporan
-        </Link>
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: "4px" }}>
+          <Link
+            href={canCreate ? "/pengguna/laporan/buat" : "#"}
+            onClick={(e) => { if (!canCreate) e.preventDefault(); }}
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "6px",
+              padding: "6px 12px",
+              backgroundColor: canCreate ? "#eb9d2a" : "#9ea096",
+              color: "#23251d",
+              borderRadius: "4px",
+              fontSize: "14px",
+              fontWeight: 500,
+              textDecoration: "none",
+              fontFamily: "'IBM Plex Sans Variable', sans-serif",
+              cursor: canCreate ? "pointer" : "not-allowed",
+              opacity: canCreate ? 1 : 0.7,
+            }}
+          >
+            <Plus size={14} /> Buat Laporan
+          </Link>
+          {!canCreate && (
+            <span style={{ fontSize: "11px", color: "#9ea096", fontFamily: "'IBM Plex Sans Variable', sans-serif" }}>
+              Batas 3 laporan aktif tercapai
+            </span>
+          )}
+        </div>
       </div>
 
       <div style={{ marginBottom: "12px", display: "flex", gap: "6px", flexWrap: "wrap" }}>
@@ -93,7 +105,7 @@ export default function RiwayatLaporanPage() {
               fontFamily: "'IBM Plex Sans Variable', sans-serif",
             }}
           >
-            {s === "" ? "Semua" : s === "new" ? "Baru" : s === "in_progress" ? "Diproses" : s === "resolved" ? "Selesai" : "Ditolak"}
+            {s === "" ? "Semua" : s === "new" ? "Menunggu Persetujuan" : s === "in_progress" ? "Diproses" : s === "resolved" ? "Selesai" : "Ditolak"}
           </button>
         ))}
       </div>
