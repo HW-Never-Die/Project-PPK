@@ -2,11 +2,9 @@
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import Link from "next/link";
-import { X, Info } from "lucide-react";
+import { X, Info, AlertTriangle } from "lucide-react";
 import FacilityCard from "@/components/facilities/FacilityCard";
 import FacilityFilter from "@/components/facilities/FacilityFilter";
-import TagPill from "@/components/ui/TagPill";
 import { Facility } from "@/types";
 import { formatFacilityType } from "@/lib/utils";
 
@@ -23,6 +21,9 @@ export default function FacilitiesPage() {
 
   // Modal floating detail state
   const [selectedFacility, setSelectedFacility] = useState<Facility | null>(null);
+  const [reserveBlocked, setReserveBlocked] = useState(false);
+
+  const isSelectedMaintenance = selectedFacility?.status === "maintenance";
 
   const defaultImages: Record<string, string> = {
     ruang_kelas: "/images/facilities/ruang-kelas.webp",
@@ -42,12 +43,15 @@ export default function FacilitiesPage() {
         if (filters.type) params.set("type", filters.type);
         if (filters.capacity) params.set("capacity", filters.capacity);
         if (filters.sort) params.set("sort", filters.sort);
-        params.set("status", "active");
 
         const res = await fetch(`/api/facilities?${params.toString()}`);
         const data = await res.json();
         if (!ignore && data?.data) {
-          setFacilities(data.data);
+          // ponytail: tampilkan active + maintenance di katalog publik (filter hanya inactive).
+          // Upgrade path: tambah filter status di UI katalog jika user ingin sembunyikan unit perbaikan.
+          setFacilities(
+            (data.data as Facility[]).filter((f) => f.status !== "inactive")
+          );
         }
       } catch (err) {
         console.error("Gagal memuat data fasilitas:", err);
@@ -67,11 +71,13 @@ export default function FacilitiesPage() {
 
   const handleFilterChange = (newFilters: typeof filters) => {
     setLoading(true);
+    setReserveBlocked(false);
     setFilters(newFilters);
   };
 
   const handleResetFilters = () => {
     setLoading(true);
+    setReserveBlocked(false);
     setFilters({
       search: "",
       type: "",
@@ -127,7 +133,10 @@ export default function FacilitiesPage() {
             <FacilityCard
               key={fac.id}
               facility={fac}
-              onViewDetail={(item) => setSelectedFacility(item)}
+              onViewDetail={(item) => {
+                setReserveBlocked(false);
+                setSelectedFacility(item);
+              }}
             />
           ))}
         </div>
@@ -166,12 +175,18 @@ export default function FacilitiesPage() {
                   alt={selectedFacility.name}
                   fill
                   sizes="(max-width: 768px) 100vw, 672px"
-                  className="object-cover"
+                  className={`object-cover ${isSelectedMaintenance ? "grayscale" : ""}`}
                   priority
                 />
-                <div className="absolute top-3 right-3">
-                  <TagPill status={selectedFacility.status} />
-                </div>
+
+                {isSelectedMaintenance && (
+                  <div className="absolute inset-0 bg-[#23251d]/55 flex items-center justify-center px-4">
+                    <span className="font-[family-name:var(--font-ibm-plex-sans-variable)] text-white font-extrabold tracking-[0.18em] uppercase text-sm sm:text-base text-center leading-tight border border-white/70 bg-black/25 px-3 py-1.5 rounded-[3px]">
+                      Dalam Perbaikan
+                    </span>
+                  </div>
+                )}
+
                 <div className="absolute bottom-3 left-3 bg-[#23251d]/90 text-white text-xs font-semibold px-2.5 py-1 rounded-[3px] backdrop-blur-xs">
                   {formatFacilityType(selectedFacility.type)}
                 </div>
@@ -210,13 +225,32 @@ export default function FacilitiesPage() {
             </div>
 
             {/* Modal Footer - Reservasi Sekarang di Ujung Kanan */}
-            <div className="bg-[#fdfdf8] border-t border-[#bfc1b7] px-6 py-3.5 flex items-center justify-end shrink-0">
-              <Link
-                href={`/pengguna/reservasi/buat?facilityId=${selectedFacility.id}`}
-                className="inline-flex items-center justify-center bg-[#eb9d2a] hover:bg-[#d88c22] text-[#23251d] font-bold text-sm py-2.5 px-5 rounded-[4px] transition-colors shadow-xs"
-              >
-                <span>Reservasi Sekarang</span>
-              </Link>
+            <div className="bg-[#fdfdf8] border-t border-[#bfc1b7] px-6 py-3.5 flex flex-col gap-2.5 shrink-0">
+              {reserveBlocked && isSelectedMaintenance && (
+                <div className="flex items-center gap-2 text-[13px] font-medium text-[#f54e00]">
+                  <AlertTriangle className="w-4 h-4 shrink-0" />
+                  <span>Fasilitas sedang dalam perbaikan dan belum dapat direservasi.</span>
+                </div>
+              )}
+              <div className="flex items-center justify-end">
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (isSelectedMaintenance) {
+                      setReserveBlocked(true);
+                      return;
+                    }
+                    window.location.href = `/pengguna/reservasi/buat?facilityId=${selectedFacility.id}`;
+                  }}
+                  className={`inline-flex items-center justify-center font-bold text-sm py-2.5 px-5 rounded-[4px] transition-colors shadow-xs ${
+                    isSelectedMaintenance
+                      ? "bg-[#9ea096] text-white cursor-not-allowed"
+                      : "bg-[#eb9d2a] hover:bg-[#d88c22] text-[#23251d]"
+                  }`}
+                >
+                  <span>Reservasi Sekarang</span>
+                </button>
+              </div>
             </div>
           </div>
         </div>

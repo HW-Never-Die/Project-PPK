@@ -1,7 +1,6 @@
 "use client";
 
 import Image from "next/image";
-import TagPill from "@/components/ui/TagPill";
 import { formatFacilityType } from "@/lib/utils";
 import { Facility } from "@/types";
 
@@ -27,6 +26,8 @@ export default function FacilityCard({
       ? facility.imageUrl
       : defaultImages[facility.type] || "/images/facilities/no-image.webp";
 
+  const isMaintenance = facility.status === "maintenance";
+
   return (
     <div className="bg-white border border-[#bfc1b7] rounded-[4px] overflow-hidden flex flex-col justify-between hover:border-[#111827] transition-colors shadow-xs">
       <div>
@@ -36,12 +37,20 @@ export default function FacilityCard({
             alt={facility.name}
             fill
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-            className="object-cover transition-transform duration-300 hover:scale-105"
+            className={`object-cover transition-transform duration-300 ${
+              isMaintenance ? "grayscale" : "hover:scale-105"
+            }`}
             priority={false}
           />
-          <div className="absolute top-2.5 right-2.5">
-            <TagPill status={facility.status} />
-          </div>
+
+          {isMaintenance && (
+            <div className="absolute inset-0 bg-[#23251d]/55 flex items-center justify-center px-4">
+              <span className="font-[family-name:var(--font-ibm-plex-sans-variable)] text-white font-extrabold tracking-[0.18em] uppercase text-[13px] sm:text-sm text-center leading-tight border border-white/70 bg-black/25 px-3 py-1.5 rounded-[3px]">
+                Dalam Perbaikan
+              </span>
+            </div>
+          )}
+
           <div className="absolute bottom-2.5 left-2.5 bg-[#23251d]/85 text-white text-[11px] font-semibold px-2 py-0.5 rounded-[3px] backdrop-blur-xs">
             {formatFacilityType(facility.type)}
           </div>
