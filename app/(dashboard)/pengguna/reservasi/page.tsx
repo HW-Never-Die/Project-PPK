@@ -52,6 +52,10 @@ export default function RiwayatReservasiPage() {
   }, [activeTab, refreshKey]);
 
   const handleTabChange = (key: string) => {
+    if (key === activeTab) {
+      forceRefresh();
+      return;
+    }
     setLoading(true);
     setActiveTab(key);
   };
