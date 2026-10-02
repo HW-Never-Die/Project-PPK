@@ -108,6 +108,7 @@ export default function KelolaReservasiPetugasPage() {
         <ReservationTable
           reservations={reservations}
           mode="petugas"
+          activeTab={activeTab}
           onAction={forceRefresh}
         />
       )}

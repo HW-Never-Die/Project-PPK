@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import TagPill from "@/components/ui/TagPill";
 import { FileText } from "lucide-react";
 
@@ -23,6 +23,7 @@ type Reservation = {
 type Props = {
   reservations: Reservation[];
   mode: "pengguna" | "petugas";
+  activeTab?: string;
   onAction?: () => void;
 };
 
@@ -115,7 +116,9 @@ const statusColor: Record<string, { bg: string; text: string; border: string }> 
   cancelled: { bg: "rgba(158,160,150,0.1)", text: "#65675e", border: "rgba(158,160,150,0.3)" },
 };
 
-export default function ReservationTable({ reservations, mode, onAction }: Props) {
+const MAX_VISIBLE = 4;
+
+export default function ReservationTable({ reservations, mode, activeTab, onAction }: Props) {
   const [actionLoading, setActionLoading] = useState<number | null>(null);
   const [cancelModal, setCancelModal] = useState<number | null>(null);
   const [cancelReason, setCancelReason] = useState("");
@@ -123,6 +126,15 @@ export default function ReservationTable({ reservations, mode, onAction }: Props
   const [rejectReason, setRejectReason] = useState("");
   const [detailModal, setDetailModal] = useState<Reservation | null>(null);
   const [error, setError] = useState("");
+  const [showAll, setShowAll] = useState(false);
+
+  useEffect(() => { setShowAll(false); }, [activeTab]);
+
+  const skipLimit = mode === "petugas" && activeTab === "pending";
+  const visibleReservations = skipLimit || showAll
+    ? reservations
+    : reservations.slice(0, MAX_VISIBLE);
+  const hasMore = !skipLimit && reservations.length > MAX_VISIBLE;
 
   const canUserCancel = (r: Reservation): boolean => {
     const now = new Date();
@@ -230,7 +242,7 @@ export default function ReservationTable({ reservations, mode, onAction }: Props
               </tr>
             </thead>
             <tbody>
-              {reservations.map((r) => (
+              {visibleReservations.map((r) => (
                 <tr key={r.id} style={{ transition: "background 0.15s" }}>
                   {mode === "petugas" && (
                     <td style={tdStyle}>
@@ -347,6 +359,29 @@ export default function ReservationTable({ reservations, mode, onAction }: Props
           </table>
         </div>
       </div>
+
+      {hasMore && !showAll && (
+        <button
+          type="button"
+          onClick={() => setShowAll(true)}
+          style={{
+            display: "block",
+            width: "100%",
+            padding: "10px 0",
+            marginTop: "8px",
+            backgroundColor: "transparent",
+            border: "1px solid #bfc1b7",
+            borderRadius: "6px",
+            fontSize: "13px",
+            fontWeight: 500,
+            color: "#4d4f46",
+            cursor: "pointer",
+            fontFamily: "'IBM Plex Sans Variable', sans-serif",
+          }}
+        >
+          Tampilkan {reservations.length - MAX_VISIBLE} lainnya
+        </button>
+      )}
 
       {cancelModal && (
         <div
