@@ -162,6 +162,7 @@ export default function RiwayatReservasiPage() {
         <ReservationTable
           reservations={reservations}
           mode="pengguna"
+          activeTab={activeTab}
           onAction={forceRefresh}
         />
       )}
