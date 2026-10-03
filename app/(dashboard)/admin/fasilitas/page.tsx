@@ -197,11 +197,11 @@ export default function AdminFacilitiesPage() {
   return (
     <div className="space-y-6">
       {/* Title & Action */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-[#bfc1b7]">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-[#e5e7e0]">
         <div>
           <div className="flex items-center gap-2 mb-1">
             <Building2 className="w-5 h-5 text-[#eb9d2a]" />
-            <h1 className="text-2xl font-extrabold text-[#111827] tracking-tight">
+            <h1 className="text-[22px] font-extrabold text-[#111827] tracking-[-0.5px] font-[family-name:var(--font-open-runde)]">
               Manajemen Master Fasilitas
             </h1>
           </div>
@@ -213,7 +213,7 @@ export default function AdminFacilitiesPage() {
         <button
           type="button"
           onClick={handleOpenAdd}
-          className="inline-flex items-center justify-center gap-1.5 bg-[#eb9d2a] hover:bg-[#d88c22] text-[#23251d] font-bold text-xs py-2 px-4 rounded-[4px] transition-colors cursor-pointer shrink-0"
+          className="relative top-0 inline-flex items-center justify-center gap-1.5 bg-[#eb9d2a] hover:bg-[#df9323] text-[#23251d] font-semibold text-[13px] py-[7px] px-4 rounded-[6px] transition-all duration-100 cursor-pointer shrink-0 border border-[#d88c22] shadow-[0_2.5px_0_0_#b17816] active:top-[1.5px] active:shadow-none"
         >
           <Plus className="w-4 h-4" />
           <span>Tambah Fasilitas</span>
@@ -221,7 +221,7 @@ export default function AdminFacilitiesPage() {
       </div>
 
       {/* Filter Bar */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 bg-[#fdfdf8] p-3 border border-[#bfc1b7] rounded-[4px]">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 bg-[#fdfdf8] p-3 border border-[#e5e7e0] rounded-[8px]">
         <div className="relative flex items-center">
           <Search className="w-3.5 h-3.5 absolute left-3 text-[#65675e] pointer-events-none" />
           <input
@@ -232,7 +232,7 @@ export default function AdminFacilitiesPage() {
               setLoading(true);
               setSearch(e.target.value);
             }}
-            className="w-full pl-9 pr-3 py-1.5 text-xs border border-[#bfc1b7] rounded-[4px] bg-white text-[#23251d] focus:outline-none focus:border-[#111827]"
+            className="w-full pl-9 pr-3 py-1.5 text-[13px] border border-[#bfc1b7] rounded-[6px] bg-white text-[#23251d] focus:outline-none focus:border-[#eb9d2a] transition-[border-color] duration-150"
           />
         </div>
 
@@ -243,7 +243,7 @@ export default function AdminFacilitiesPage() {
               setLoading(true);
               setTypeFilter(e.target.value);
             }}
-            className="w-full px-3 py-1.5 text-xs border border-[#bfc1b7] rounded-[4px] bg-white text-[#23251d] focus:outline-none focus:border-[#111827]"
+            className="w-full px-3 py-1.5 text-[13px] border border-[#bfc1b7] rounded-[6px] bg-white text-[#23251d] focus:outline-none focus:border-[#eb9d2a] transition-[border-color] duration-150"
           >
             <option value="">Semua Tipe</option>
             <option value="ruang_kelas">Ruang Kelas</option>
@@ -261,7 +261,7 @@ export default function AdminFacilitiesPage() {
               setLoading(true);
               setStatusFilter(e.target.value);
             }}
-            className="w-full px-3 py-1.5 text-xs border border-[#bfc1b7] rounded-[4px] bg-white text-[#23251d] focus:outline-none focus:border-[#111827]"
+            className="w-full px-3 py-1.5 text-[13px] border border-[#bfc1b7] rounded-[6px] bg-white text-[#23251d] focus:outline-none focus:border-[#eb9d2a] transition-[border-color] duration-150"
           >
             <option value="">Semua Status</option>
             <option value="active">Aktif</option>
@@ -272,11 +272,11 @@ export default function AdminFacilitiesPage() {
       </div>
 
       {/* Facilities Master Table */}
-      <div className="border border-[#bfc1b7] rounded-[4px] overflow-hidden bg-white">
+      <div className="border border-[#e5e7e0] rounded-[8px] overflow-hidden bg-white shadow-[0_1px_2px_rgba(0,0,0,0.02)]">
         <div className="overflow-x-auto">
           <table className="w-full text-center text-xs border-collapse">
             <thead>
-              <tr className="bg-[#fdfdf8] border-b border-[#bfc1b7] text-[#65675e] font-bold">
+              <tr className="bg-[#fdfdf8] border-b border-[#e5e7e0] text-[#65675e] font-semibold">
                 <th className="py-2.5 px-3 text-center">Nama Fasilitas</th>
                 <th className="py-2.5 px-3 text-center">Tipe</th>
                 <th className="py-2.5 px-3 text-center">Lokasi</th>
@@ -303,11 +303,11 @@ export default function AdminFacilitiesPage() {
                   return (
                     <tr key={fac.id} className="hover:bg-[#fdfdf8] transition-colors">
                       <td className="py-2.5 px-3 text-center">
-                        <div className="font-bold text-[#111827]">{fac.name}</div>
+                        <div className="font-semibold text-[#23251d] font-[family-name:var(--font-open-runde)]">{fac.name}</div>
                         <div className="text-[11px] text-[#65675e] line-clamp-1 max-w-xs mx-auto">{fac.description}</div>
                       </td>
                       <td className="py-2.5 px-3 text-center">
-                        <span className="bg-[#eeefe9] px-2 py-0.5 rounded-[2px] font-medium text-[#23251d]">
+                        <span className="inline-block bg-[rgba(235,157,42,0.12)] text-[#b17816] px-2 py-0.5 rounded-[4px] text-[11px] font-semibold uppercase tracking-[0.3px]">
                           {formatFacilityType(fac.type)}
                         </span>
                       </td>
@@ -322,7 +322,7 @@ export default function AdminFacilitiesPage() {
                         <button
                           type="button"
                           onClick={() => handleOpenEdit(fac)}
-                          className="inline-flex items-center gap-1 px-2 py-1 text-[11px] font-semibold text-[#23251d] bg-[#eeefe9] hover:bg-[#e1d7c2] border border-[#bfc1b7] rounded-[3px] transition-colors cursor-pointer"
+                          className="relative top-0 inline-flex items-center gap-1 px-2 py-1 text-[11px] font-semibold text-[#4d4f46] bg-[#ffffff] hover:bg-[#f5f5f0] border border-[#d1d5db] rounded-[6px] transition-all duration-100 cursor-pointer shadow-[0_2px_0_0_#d1d1c9] active:top-[1.5px] active:shadow-none"
                         >
                           <Pencil className="w-3 h-3 text-[#65675e]" />
                           <span>Edit</span>
@@ -330,10 +330,10 @@ export default function AdminFacilitiesPage() {
                         <button
                           type="button"
                           onClick={() => handleToggleStatus(fac)}
-                          className={`inline-flex items-center gap-1 px-2 py-1 text-[11px] font-semibold border rounded-[3px] transition-colors cursor-pointer ${
+                          className={`relative top-0 inline-flex items-center gap-1 px-2 py-1 text-[11px] font-semibold border rounded-[6px] transition-all duration-100 cursor-pointer shadow-[0_2px_0_0_rgba(0,0,0,0.08)] active:top-[1.5px] active:shadow-none ${
                             fac.status === "active"
-                              ? "bg-white hover:bg-red-50 text-red-700 border-red-200"
-                              : "bg-white hover:bg-emerald-50 text-emerald-700 border-emerald-200"
+                              ? "bg-[#fef2f2] hover:bg-[#fee2e2] text-[#f54e00] border-[rgba(245,78,0,0.25)]"
+                              : "bg-[#f6faf3] hover:bg-[#eef7e8] text-[#3d7a1c] border-[#6aa84f]"
                           }`}
                         >
                           <Power className="w-3 h-3" />
@@ -351,31 +351,31 @@ export default function AdminFacilitiesPage() {
 
       {/* Modal Add / Edit (PostHog Window Style) */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs">
-          <div className="bg-white border border-[#bfc1b7] rounded-[6px] shadow-lg w-full max-w-lg overflow-hidden animate-in fade-in zoom-in-95 duration-150">
-            {/* Modal Title Bar */}
-            <div className="bg-[#fdfdf8] border-b border-[#bfc1b7] px-4 py-3 flex items-center justify-between">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-[24px_16px] bg-[rgba(0,0,0,0.35)] backdrop-blur-[3px]">
+          <div className="bg-white rounded-[10px] shadow-[0_18px_45px_rgba(0,0,0,0.15)] w-full max-w-[540px] max-h-[calc(100vh-80px)] flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+            {/* Modal Header */}
+            <div className="bg-[#fdfdf8] border-b border-[#e5e7e0] px-5 py-[14px] flex items-center justify-between shrink-0">
               <div className="flex items-center gap-2">
                 <span className="w-2.5 h-2.5 rounded-full bg-[#eb9d2a]" />
-                <span className="font-bold text-sm text-[#111827]">
+                <span className="font-bold text-[15px] text-[#23251d] font-[family-name:var(--font-open-runde)]">
                   {editingFacility ? "Edit Data Fasilitas" : "Tambah Fasilitas Baru"}
                 </span>
               </div>
               <button
                 type="button"
                 onClick={() => setIsModalOpen(false)}
-                className="text-[#111827] hover:text-black p-1.5 rounded-md bg-black/5 hover:bg-black/10 transition-colors cursor-pointer flex items-center justify-center"
+                className="text-[#65675e] hover:bg-[#f5f5f0] p-1 rounded-[4px] transition-colors cursor-pointer flex items-center justify-center border-none bg-transparent"
                 aria-label="Tutup"
               >
-                <X className="w-7 h-7" strokeWidth={2.5} />
+                <X className="w-5 h-5" strokeWidth={2.5} />
               </button>
             </div>
 
             {/* Modal Form */}
-            <form onSubmit={handleSubmit} className="p-5 space-y-3.5">
+            <form onSubmit={handleSubmit} className="px-5 py-4 space-y-3.5 overflow-y-auto">
               {/* Nama */}
               <div>
-                <label className="block text-xs font-bold text-[#23251d] mb-1">
+                <label className="block text-[13px] font-semibold text-[#23251d] mb-[6px]">
                   Nama Fasilitas *
                 </label>
                 <input
@@ -383,7 +383,7 @@ export default function AdminFacilitiesPage() {
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   placeholder="Contoh: Lab Komputer 2"
-                  className="w-full px-3 py-1.5 text-xs border border-[#bfc1b7] rounded-[4px] bg-white text-[#23251d] focus:outline-none focus:border-[#111827]"
+                  className="w-full px-3 py-1.5 text-[13px] border border-[#bfc1b7] rounded-[6px] bg-white text-[#23251d] focus:outline-none focus:border-[#eb9d2a] transition-[border-color] duration-150"
                 />
                 {formErrors.name && (
                   <p className="text-[11px] text-red-600 mt-0.5 flex items-center gap-1">
@@ -395,13 +395,13 @@ export default function AdminFacilitiesPage() {
               {/* Tipe & Status */}
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-bold text-[#23251d] mb-1">
+                  <label className="block text-[13px] font-semibold text-[#23251d] mb-[6px]">
                     Tipe *
                   </label>
                   <select
                     value={formData.type}
                     onChange={(e) => setFormData({ ...formData, type: e.target.value as FacilityType })}
-                    className="w-full px-3 py-1.5 text-xs border border-[#bfc1b7] rounded-[4px] bg-white text-[#23251d] focus:outline-none focus:border-[#111827]"
+                    className="w-full px-3 py-1.5 text-[13px] border border-[#bfc1b7] rounded-[6px] bg-white text-[#23251d] focus:outline-none focus:border-[#eb9d2a] transition-[border-color] duration-150"
                   >
                     <option value="ruang_kelas">Ruang Kelas</option>
                     <option value="aula">Aula</option>
@@ -412,13 +412,13 @@ export default function AdminFacilitiesPage() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-[#23251d] mb-1">
+                  <label className="block text-[13px] font-semibold text-[#23251d] mb-[6px]">
                     Status Operasional
                   </label>
                   <select
                     value={formData.status}
                     onChange={(e) => setFormData({ ...formData, status: e.target.value as FacilityStatus })}
-                    className="w-full px-3 py-1.5 text-xs border border-[#bfc1b7] rounded-[4px] bg-white text-[#23251d] focus:outline-none focus:border-[#111827]"
+                    className="w-full px-3 py-1.5 text-[13px] border border-[#bfc1b7] rounded-[6px] bg-white text-[#23251d] focus:outline-none focus:border-[#eb9d2a] transition-[border-color] duration-150"
                   >
                     <option value="active">Aktif (Tersedia)</option>
                     <option value="maintenance">Perbaikan</option>
@@ -430,7 +430,7 @@ export default function AdminFacilitiesPage() {
               {/* Lokasi & Kapasitas */}
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-bold text-[#23251d] mb-1">
+                  <label className="block text-[13px] font-semibold text-[#23251d] mb-[6px]">
                     Lokasi / Gedung *
                   </label>
                   <input
@@ -438,7 +438,7 @@ export default function AdminFacilitiesPage() {
                     value={formData.location}
                     onChange={(e) => setFormData({ ...formData, location: e.target.value })}
                     placeholder="Contoh: Gedung C Lantai 2"
-                    className="w-full px-3 py-1.5 text-xs border border-[#bfc1b7] rounded-[4px] bg-white text-[#23251d] focus:outline-none focus:border-[#111827]"
+                    className="w-full px-3 py-1.5 text-[13px] border border-[#bfc1b7] rounded-[6px] bg-white text-[#23251d] focus:outline-none focus:border-[#eb9d2a] transition-[border-color] duration-150"
                   />
                   {formErrors.location && (
                     <p className="text-[11px] text-red-600 mt-0.5 flex items-center gap-1">
@@ -448,7 +448,7 @@ export default function AdminFacilitiesPage() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-[#23251d] mb-1">
+                  <label className="block text-[13px] font-semibold text-[#23251d] mb-[6px]">
                     Kapasitas (Orang)
                   </label>
                   <input
@@ -456,7 +456,7 @@ export default function AdminFacilitiesPage() {
                     value={formData.capacity}
                     onChange={(e) => setFormData({ ...formData, capacity: e.target.value })}
                     placeholder="Kosongkan jika tipe alat"
-                    className="w-full px-3 py-1.5 text-xs border border-[#bfc1b7] rounded-[4px] bg-white text-[#23251d] focus:outline-none focus:border-[#111827]"
+                    className="w-full px-3 py-1.5 text-[13px] border border-[#bfc1b7] rounded-[6px] bg-white text-[#23251d] focus:outline-none focus:border-[#eb9d2a] transition-[border-color] duration-150"
                   />
                   {formErrors.capacity && (
                     <p className="text-[11px] text-red-600 mt-0.5 flex items-center gap-1">
@@ -468,7 +468,7 @@ export default function AdminFacilitiesPage() {
 
               {/* Deskripsi */}
               <div>
-                <label className="block text-xs font-bold text-[#23251d] mb-1">
+                <label className="block text-[13px] font-semibold text-[#23251d] mb-[6px]">
                   Deskripsi Lengkap *
                 </label>
                 <textarea
@@ -476,7 +476,7 @@ export default function AdminFacilitiesPage() {
                   value={formData.description}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                   placeholder="Fasilitas dan kelengkapan ruangan/alat..."
-                  className="w-full px-3 py-1.5 text-xs border border-[#bfc1b7] rounded-[4px] bg-white text-[#23251d] focus:outline-none focus:border-[#111827]"
+                  className="w-full px-3 py-1.5 text-[13px] border border-[#bfc1b7] rounded-[6px] bg-white text-[#23251d] focus:outline-none focus:border-[#eb9d2a] transition-[border-color] duration-150"
                 />
                 {formErrors.description && (
                   <p className="text-[11px] text-red-600 mt-0.5 flex items-center gap-1">
@@ -487,7 +487,7 @@ export default function AdminFacilitiesPage() {
 
               {/* URL Foto */}
               <div>
-                <label className="block text-xs font-bold text-[#23251d] mb-1">
+                <label className="block text-[13px] font-semibold text-[#23251d] mb-[6px]">
                   Path / URL Gambar
                 </label>
                 <input
@@ -495,23 +495,27 @@ export default function AdminFacilitiesPage() {
                   value={formData.imageUrl}
                   onChange={(e) => setFormData({ ...formData, imageUrl: e.target.value })}
                   placeholder="/images/facilities/ruang-kelas.webp"
-                  className="w-full px-3 py-1.5 text-xs border border-[#bfc1b7] rounded-[4px] bg-white text-[#23251d] focus:outline-none focus:border-[#111827]"
+                  className="w-full px-3 py-1.5 text-[13px] border border-[#bfc1b7] rounded-[6px] bg-white text-[#23251d] focus:outline-none focus:border-[#eb9d2a] transition-[border-color] duration-150"
                 />
               </div>
 
-              {/* Modal Buttons */}
-              <div className="pt-3 border-t border-[#eeefe9] flex items-center justify-end gap-2">
+              {/* Modal Footer */}
+              <div className="bg-[#fdfdf8] border-t border-[#e5e7e0] px-5 py-3.5 shrink-0 flex items-center justify-end gap-2">
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="px-3 py-1.5 text-xs font-semibold text-[#65675e] hover:bg-[#eeefe9] rounded-[4px] transition-colors cursor-pointer"
+                  className="relative top-0 inline-flex px-4 py-[7px] text-[13px] font-semibold text-[#4d4f46] bg-[#ffffff] hover:bg-[#f5f5f0] border border-[#d1d5db] rounded-[6px] transition-all duration-100 cursor-pointer shadow-[0_2px_0_0_#d1d1c9] active:top-[1.5px] active:shadow-none"
                 >
                   Batal
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="px-4 py-1.5 text-xs font-bold bg-[#eb9d2a] hover:bg-[#d88c22] text-[#23251d] rounded-[4px] transition-colors cursor-pointer disabled:opacity-50"
+                  className={`relative top-0 inline-flex px-4 py-[7px] text-[13px] font-semibold rounded-[6px] transition-all duration-100 cursor-pointer ${
+                    isSubmitting
+                      ? "bg-[#e5e7e0] text-[#9ea096] cursor-not-allowed shadow-none"
+                      : "bg-[#eb9d2a] text-[#23251d] hover:bg-[#df9323] border border-[#d88c22] shadow-[0_2.5px_0_0_#b17816] active:top-[1.5px] active:shadow-none"
+                  }`}
                 >
                   {isSubmitting ? "Menyimpan..." : editingFacility ? "Simpan Perubahan" : "Buat Fasilitas"}
                 </button>
