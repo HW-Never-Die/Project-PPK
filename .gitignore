@@ -41,4 +41,5 @@ yarn-error.log*
 next-env.d.ts
 
 # development docs (local only, do not push)
+/References
 

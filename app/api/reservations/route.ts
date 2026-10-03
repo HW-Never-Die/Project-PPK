@@ -29,7 +29,7 @@ export async function GET(request: NextRequest) {
     where,
     include: {
       user: { select: { id: true, name: true, email: true } },
-      facility: { select: { id: true, name: true, type: true, location: true } },
+      facility: { select: { id: true, name: true, type: true, location: true, imageUrl: true, capacity: true } },
       processor: { select: { id: true, name: true } },
     },
     orderBy: { createdAt: "desc" },
