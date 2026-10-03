@@ -29,7 +29,7 @@ export default function FacilityCard({
   const isMaintenance = facility.status === "maintenance";
 
   return (
-    <div className="bg-white border border-[#bfc1b7] rounded-[4px] overflow-hidden flex flex-col justify-between hover:border-[#111827] transition-colors shadow-xs">
+    <div className="bg-white border border-[#e5e7e0] rounded-[8px] overflow-hidden flex flex-col justify-between hover:border-[#bfc1b7] transition-all duration-150 shadow-[0_1px_2px_rgba(0,0,0,0.02)] hover:shadow-[0_3px_10px_rgba(0,0,0,0.04)]">
       <div>
         <div className="relative w-full aspect-[16/9] bg-[#eeefe9] overflow-hidden">
           <Image
@@ -51,18 +51,18 @@ export default function FacilityCard({
             </div>
           )}
 
-          <div className="absolute bottom-2.5 left-2.5 bg-[#23251d]/85 text-white text-[11px] font-semibold px-2 py-0.5 rounded-[3px] backdrop-blur-xs">
+          <div className="absolute bottom-2.5 left-2.5 bg-[rgba(235,157,42,0.12)] text-[#b17816] text-[11px] font-semibold uppercase tracking-[0.3px] px-2 py-0.5 rounded-[4px] backdrop-blur-xs">
             {formatFacilityType(facility.type)}
           </div>
         </div>
 
         <div className="p-4 space-y-2">
-          <h3 className="font-extrabold text-base text-[#111827] line-clamp-1">
+          <h3 className="font-[family-name:var(--font-open-runde)] font-bold text-[15px] text-[#23251d] line-clamp-1">
             {facility.name}
           </h3>
 
-          <div className="space-y-1 text-xs text-[#4B5563]">
-            <p className="font-medium text-[#111827] truncate">{facility.location}</p>
+          <div className="space-y-1 text-[12px] text-[#65675e]">
+            <p className="font-medium text-[#23251d] truncate">{facility.location}</p>
             <p className="text-[#65675e]">
               {facility.capacity ? `Kapasitas: ${facility.capacity} orang` : "Kapasitas: Tanpa batas"}
             </p>
@@ -74,7 +74,7 @@ export default function FacilityCard({
         <button
           type="button"
           onClick={() => onViewDetail?.(facility)}
-          className="w-full flex items-center justify-center bg-[#eb9d2a] hover:bg-[#d88c22] text-[#23251d] font-bold text-sm py-2.5 px-4 rounded-[4px] transition-colors cursor-pointer shadow-xs"
+          className="w-full relative top-0 flex items-center justify-center bg-[#eb9d2a] hover:bg-[#df9323] text-[#23251d] font-semibold text-[13px] py-[7px] px-4 rounded-[6px] transition-all duration-100 cursor-pointer border border-[#d88c22] shadow-[0_2.5px_0_0_#b17816] active:top-[1.5px] active:shadow-none"
         >
           Lihat Detail
         </button>

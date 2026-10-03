@@ -2,11 +2,63 @@
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import { X, Info, AlertTriangle } from "lucide-react";
+import Link from "next/link";
+import { X, Info, AlertTriangle, Building2, CheckCircle2, Wrench, Layers } from "lucide-react";
 import FacilityCard from "@/components/facilities/FacilityCard";
 import FacilityFilter from "@/components/facilities/FacilityFilter";
+import SkyscraperBackground from "@/components/reservations/SkyscraperBackground";
 import { Facility } from "@/types";
 import { formatFacilityType } from "@/lib/utils";
+
+function StatCard({
+  label,
+  value,
+  color,
+  icon,
+}: {
+  label: string;
+  value: number;
+  color: string;
+  icon: React.ReactNode;
+}) {
+  return (
+    <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        gap: "12px",
+        padding: "12px 14px",
+        backgroundColor: "#fdfdf8",
+        border: "1px solid #e5e7e0",
+        borderRadius: "8px",
+      }}
+    >
+      <div
+        style={{
+          width: "36px",
+          height: "36px",
+          borderRadius: "6px",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          backgroundColor: `${color}1a`,
+          color,
+          flexShrink: 0,
+        }}
+      >
+        {icon}
+      </div>
+      <div>
+        <div style={{ fontSize: "11px", color: "#65675e", fontWeight: 500, fontFamily: "'IBM Plex Sans Variable', sans-serif" }}>
+          {label}
+        </div>
+        <div style={{ fontSize: "17px", fontWeight: 700, color, fontFamily: "'Open Runde', sans-serif" }}>
+          {value}
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export default function FacilitiesPage() {
   const [facilities, setFacilities] = useState<Facility[]>([]);
@@ -87,16 +139,120 @@ export default function FacilitiesPage() {
     });
   };
 
+  const activeCount = facilities.filter((f) => f.status === "active").length;
+  const maintenanceCount = facilities.filter((f) => f.status === "maintenance").length;
+  const typesUsed = new Set(facilities.map((f) => f.type)).size;
+
   return (
-    <div className="flex-1 w-full max-w-6xl mx-auto p-4 sm:p-6">
-      {/* Header */}
-      <div className="mb-6">
-        <h1 className="text-2xl font-extrabold text-[#111827] tracking-tight mb-1">
+    <div className="flex-1 w-full max-w-6xl mx-auto p-6">
+      <SkyscraperBackground />
+      {/* Panel background — satukan semua section (parity dgn layout dashboard) */}
+      <div className="bg-white border border-[#d1d5db] rounded-lg shadow-sm p-6 min-h-[500px]" style={{ display: "flex", flexDirection: "column", gap: "18px" }}>
+      {/* Breadcrumb Bar */}
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          padding: "6px 12px",
+          backgroundColor: "#f5f5f0",
+          borderRadius: "6px",
+          border: "1px solid #e5e7e0",
+          fontSize: "12px",
+          fontFamily: "'IBM Plex Sans Variable', sans-serif",
+          color: "#65675e",
+        }}
+      >
+        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+          <span
+            style={{
+              display: "inline-block",
+              width: "8px",
+              height: "8px",
+              borderRadius: "50%",
+              backgroundColor: "#eb9d2a",
+            }}
+          />
+          <Link href="/" style={{ color: "#23251d", textDecoration: "none", fontWeight: 600 }}>
+            Eunomia OS
+          </Link>
+          <span>/</span>
+          <span>Katalog</span>
+          <span>/</span>
+          <span style={{ color: "#23251d", fontWeight: 500 }}>Fasilitas</span>
+        </div>
+        <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+          <span
+            title="Maximize"
+            style={{ display: "inline-block", width: "10px", height: "10px", borderRadius: "2px", border: "1px solid #bfc1b7" }}
+          />
+          <span
+            title="Close"
+            style={{ display: "inline-block", width: "10px", height: "10px", borderRadius: "2px", border: "1px solid #bfc1b7" }}
+          />
+        </div>
+      </div>
+
+      {/* Hero Card */}
+      <div
+        style={{
+          backgroundColor: "#fdfdf8",
+          borderRadius: "8px",
+          border: "1px solid #d1d5db",
+          padding: "20px 24px",
+        }}
+      >
+        <div style={{
+          display: "inline-flex",
+          alignItems: "center",
+          gap: "5px",
+          padding: "2px 8px",
+          borderRadius: "4px",
+          backgroundColor: "rgba(235,157,42,0.12)",
+          color: "#b17816",
+          fontSize: "11px",
+          fontWeight: 600,
+          letterSpacing: "0.3px",
+          textTransform: "uppercase",
+          fontFamily: "'IBM Plex Sans Variable', sans-serif",
+          marginBottom: "8px",
+        }}>
+          <Building2 size={13} />
+          Sarana Prasarana FSM Undip
+        </div>
+        <h1
+          style={{
+            fontSize: "22px",
+            fontWeight: 800,
+            color: "#111827",
+            letterSpacing: "-0.5px",
+            margin: "0 0 6px 0",
+            fontFamily: "'Open Runde', sans-serif",
+          }}
+        >
           Katalog Fasilitas Kampus
         </h1>
-        <p className="text-[14px] text-[#4B5563]">
+        <p
+          style={{
+            fontSize: "14px",
+            color: "#4B5563",
+            fontWeight: 400,
+            fontFamily: "'IBM Plex Sans Variable', sans-serif",
+            lineHeight: "1.5",
+            margin: 0,
+            maxWidth: "680px",
+          }}
+        >
           Eksplorasi sarana prasarana FSM Undip dan temukan detail informasi kapasitas serta fasilitas yang dapat direservasi.
         </p>
+      </div>
+
+      {/* Stat Cards */}
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(190px, 1fr))", gap: "10px" }}>
+        <StatCard label="Total Fasilitas" value={facilities.length} color="#23251d" icon={<Building2 size={18} />} />
+        <StatCard label="Siap Direservasi" value={activeCount} color="#3d7a1c" icon={<CheckCircle2 size={18} />} />
+        <StatCard label="Dalam Perbaikan" value={maintenanceCount} color="#cd8407" icon={<Wrench size={18} />} />
+        <StatCard label="Kategori Terpakai" value={typesUsed} color="#65675e" icon={<Layers size={18} />} />
       </div>
 
       {/* Filter Component */}
@@ -255,6 +411,7 @@ export default function FacilitiesPage() {
           </div>
         </div>
       )}
+      </div>
     </div>
   );
 }
