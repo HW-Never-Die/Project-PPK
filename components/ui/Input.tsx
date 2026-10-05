@@ -8,6 +8,12 @@ type InputProps = InputHTMLAttributes<HTMLInputElement> & {
   error?: string;
 };
 
+/**
+ * DESIGN.md §4.6 — Form Inputs
+ * Padding: 9px 12px, border: 1px solid #bfc1b7, radius: 6px, font: 13px
+ * Label: 13px, weight 600, color #23251d, marginBottom 6px
+ * Transition: border-color 0.15s ease
+ */
 export default function Input({
   label,
   error,
@@ -19,11 +25,16 @@ export default function Input({
   const inputId = id || label?.toLowerCase().replace(/\s+/g, "-");
 
   return (
-    <div className="flex flex-col gap-1">
+    <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
       {label && (
         <label
           htmlFor={inputId}
-          className="text-caption font-medium text-deep-moss font-ibm-plex-sans-variable"
+          style={{
+            fontSize: "13px",
+            fontWeight: 600,
+            color: "#23251d",
+            fontFamily: "'IBM Plex Sans Variable', sans-serif",
+          }}
         >
           {label}
         </label>
@@ -33,18 +44,33 @@ export default function Input({
           id={inputId}
           type={type}
           className={cn(
-            "w-full rounded-md border border-warm-mist bg-paper-white px-3 py-2 text-caption text-deep-moss font-ibm-plex-sans-variable",
-            "placeholder:text-ash-green",
+            "w-full font-ibm-plex-sans-variable",
             "focus:outline-none focus:border-signal-blue focus:ring-1 focus:ring-signal-blue",
-            "transition-colors duration-150",
-            error && "border-flame-orange",
             className
           )}
+          style={{
+            padding: "9px 12px",
+            border: `1px solid ${error ? "#f54e00" : "#bfc1b7"}`,
+            borderRadius: "6px",
+            fontSize: "13px",
+            color: "#23251d",
+            backgroundColor: "#ffffff",
+            transition: "border-color 0.15s ease",
+            fontFamily: "'IBM Plex Sans Variable', sans-serif",
+          }}
           {...props}
         />
       </div>
       {error && (
-        <p className="text-micro text-flame-orange">{error}</p>
+        <p
+          style={{
+            fontSize: "12px",
+            color: "#f54e00",
+            fontFamily: "'IBM Plex Sans Variable', sans-serif",
+          }}
+        >
+          {error}
+        </p>
       )}
     </div>
   );

@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { useAuth } from "@/components/AuthProvider";
 import { ROLE_LABELS } from "@/lib/constants";
 import { LogOut, User as UserIcon } from "lucide-react";
+import Button from "@/components/ui/Button";
 
 export default function Navbar() {
   const { user, loading, logout } = useAuth();
@@ -20,7 +21,7 @@ export default function Navbar() {
 
   return (
     <div className="sticky top-0 z-50 w-full px-2 pt-2">
-      <div className="bg-[#e7e0da]/85 backdrop-blur-md px-4 py-2 border border-[#d1d5db] rounded shadow-[0_4px_12px_rgba(0,0,0,0.06)] mx-auto w-full max-w-7xl">
+      <div className="bg-[#e7e0da]/85 backdrop-blur-md px-4 py-2 border border-[#d1d5db] rounded shadow-[0_4px_12px_rgba(0,0,0,0.1)] mx-auto w-full max-w-7xl">
         <div className="flex justify-between items-center w-full">
           {/* Left Brand + Nav */}
           <div className="flex items-center gap-3 sm:gap-6 flex-1 min-w-0">
@@ -188,26 +189,24 @@ export default function Navbar() {
                 <button
                   type="button"
                   onClick={logout}
-                  className="inline-flex items-center gap-1 px-2.5 py-1.5 text-[12px] font-semibold text-gray-700 hover:text-red-600 hover:bg-black/5 rounded transition-colors cursor-pointer"
+                  className="inline-flex items-center gap-1.5 px-2.5 py-1 text-[12px] font-semibold text-[#65675e] hover:text-[#f54e00] hover:bg-black/5 rounded-[6px] transition-colors cursor-pointer"
                   title="Keluar"
                 >
-                  <LogOut className="w-4 h-4" />
+                  <LogOut className="w-3.5 h-3.5" />
                   <span className="hidden sm:inline">Keluar</span>
                 </button>
               </div>
             ) : (
               <div className="flex items-center gap-2">
-                <Link
-                  href="/login"
-                  className="px-3 py-1.5 text-[13px] font-semibold text-[#23251d] hover:bg-black/5 rounded transition-colors"
-                >
-                  Masuk
+                <Link href="/login">
+                  <Button variant="ghost" size="sm">
+                    Masuk
+                  </Button>
                 </Link>
-                <Link
-                  href="/register"
-                  className="px-3.5 py-1.5 text-[13px] font-bold bg-[#eb9d2a] hover:bg-[#d88c22] text-[#23251d] rounded transition-colors shadow-xs"
-                >
-                  Daftar
+                <Link href="/register">
+                  <Button variant="primary" size="sm">
+                    Daftar
+                  </Button>
                 </Link>
               </div>
             )}

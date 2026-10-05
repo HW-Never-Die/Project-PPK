@@ -1,49 +1,93 @@
 @import "tailwindcss";
 
 @theme {
+  /* === 1.1 Backgrounds === */
+  --color-global-bg: #eeefe9;
   --color-sandy-desk: #e1d7c2;
   --color-paper-white: #ffffff;
   --color-cream-paper: #fdfdf8;
+  --color-section-surface: #fdfdf8;
   --color-soft-linen: #eeefe9;
   --color-pale-stone: #e5e7e0;
+  --color-breadcrumb-bg: #f5f5f0;
+  --color-navbar-bg: #e7e0da;
+  --color-summary-header: #23251d;
   --color-deep-moss: #23251d;
+  --color-pure-black: #000000;
+
+  /* === 1.2 Text Colors === */
+  --color-near-black: #111827;
+  --color-charcoal: #23251d;
+  --color-body-dark: #4B5563;
+  --color-body-medium: #4d4f46;
   --color-olive-char: #4d4f46;
   --color-sage-gray: #65675e;
   --color-ash-green: #9ea096;
+  --color-muted: #9ea096;
   --color-faded-pewter: #b3b3af;
-  --color-warm-mist: #bfc1b7;
-  --color-pure-black: #000000;
-  --color-signal-blue: #2f80fa;
+  --color-placeholder: #b3b3af;
+
+  /* === 1.3 Accents & Brand === */
+  --color-marigold: #eb9d2a;
+  --color-marigold-hover: #df9323;
+  --color-marigold-border: #d88c22;
+  --color-marigold-shadow: #b17816;
   --color-amber-glow: #eb9d2a;
   --color-dark-amber: #cd8407;
+  --color-amber-text: #b27d00;
   --color-burnished-gold: #b17816;
-  --color-marigold: #f1a82c;
-  --color-flame-orange: #f54e00;
   --color-moss-green: #6aa84f;
+  --color-dark-green: #3d7a1c;
+  --color-flame-orange: #f54e00;
+  --color-signal-blue: #2f80fa;
+  --color-warm-mist: #bfc1b7;
 
+  /* === 1.5 Borders === */
+  --color-border-default: #e5e7e0;
+  --color-border-medium: #d1d5db;
+  --color-border-input: #bfc1b7;
+  --color-border-neutral-shadow: #d1d1c9;
+  --color-border-separator: #eeefe9;
+
+  /* === 2.1 Font Families === */
+  --font-sans: 'IBM Plex Sans Variable', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --font-open-runde: 'Open Runde', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --font-ibm-plex-sans-variable: 'IBM Plex Sans Variable', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  --font-ui-monospace: 'ui-monospace', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   --font-source-code-pro: 'Source Code Pro', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  --font-ui-monospace: 'ui-monospace', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 
+  /* === 2.2 Font Sizes (mapped to DESIGN.md §2.2) === */
+  --text-2xs: 10px;
+  --leading-2xs: 1.4;
+  --text-xs: 11px;
+  --leading-xs: 1.36;
   --text-micro: 12px;
   --leading-micro: 1.33;
+  --text-sm: 13px;
+  --leading-sm: 1.38;
   --text-caption: 14px;
   --leading-caption: 1.43;
+  --text-card-title: 15px;
+  --leading-card-title: 1.4;
   --text-body: 16px;
   --leading-body: 1.5;
+  --text-stat-value: 17px;
+  --leading-stat-value: 1.35;
   --text-subheading: 19px;
   --leading-subheading: 1.56;
   --tracking-subheading: -0.475px;
-  --text-heading: 21px;
-  --leading-heading: 1.4;
-  --tracking-heading: -0.525px;
+  --text-success-title: 20px;
+  --leading-success-title: 1.4;
+  --text-heading: 22px;
+  --leading-heading: 1.36;
+  --tracking-heading: -0.5px;
   --text-heading-lg: 24px;
   --leading-heading-lg: 1.33;
   --tracking-heading-lg: -0.6px;
   --text-display: 36px;
   --leading-display: 1.5;
 
+  /* === Spacing === */
   --spacing-4: 4px;
   --spacing-5: 5px;
   --spacing-6: 6px;
@@ -54,22 +98,64 @@
   --spacing-14: 14px;
   --spacing-16: 16px;
   --spacing-17: 17px;
+  --spacing-18: 18px;
   --spacing-20: 20px;
   --spacing-24: 24px;
   --spacing-32: 32px;
   --spacing-34: 34px;
+  --spacing-48: 48px;
   --spacing-64: 64px;
   --spacing-144: 144px;
 
-  --radius-md: 4px;
+  /* === Border Radius (§5 in DESIGN.md) === */
+  --radius-sm: 4px;
+  --radius-md: 6px;
   --radius-lg: 8px;
+  --radius-modal: 10px;
+  --radius-modal-lg: 12px;
   --radius-full: 9999px;
 
+  /* === Shadows === */
   --shadow-xl: rgba(0, 0, 0, 0.25) 0px 25px 50px -12px;
 }
 
 body {
-  background: var(--color-sandy-desk);
-  color: var(--color-deep-moss);
+  background: var(--color-global-bg);
+  color: var(--color-charcoal);
+  font-family: var(--font-ibm-plex-sans-variable);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   font-family: var(--font-open-runde);
+}
+
+@keyframes reservationTabFade {
+  from {
+    opacity: 0;
+    transform: translateY(3px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.tab-content-fade {
+  animation: reservationTabFade 0.16s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

@@ -15,6 +15,12 @@ type TableProps<T> = {
   emptyMessage?: string;
 };
 
+/**
+ * DESIGN.md §4.9 — Data Row / List Card patterns applied to table.
+ * Border: #e5e7e0 (border-default), separator #eeefe9
+ * Row hover: borderColor #bfc1b7, shadow 0 3px 10px rgba(0,0,0,0.04)
+ * Font: IBM Plex Sans, 13px
+ */
 export default function Table<T>({
   columns,
   data,
@@ -22,17 +28,41 @@ export default function Table<T>({
   emptyMessage = "Tidak ada data",
 }: TableProps<T>) {
   return (
-    <div className="w-full overflow-x-auto rounded-md border border-warm-mist">
-      <table className="w-full border-collapse text-caption font-ibm-plex-sans-variable">
+    <div
+      style={{
+        width: "100%",
+        overflowX: "auto",
+        borderRadius: "8px",
+        border: "1px solid #e5e7e0",
+      }}
+    >
+      <table
+        style={{
+          width: "100%",
+          borderCollapse: "collapse",
+          fontSize: "13px",
+          fontFamily: "'IBM Plex Sans Variable', sans-serif",
+        }}
+      >
         <thead>
-          <tr className="border-b border-warm-mist bg-soft-linen">
+          <tr
+            style={{
+              borderBottom: "1px solid #e5e7e0",
+              backgroundColor: "#fdfdf8",
+            }}
+          >
             {columns.map((col) => (
               <th
                 key={col.key}
-                className={cn(
-                  "px-4 py-3 text-center font-medium text-olive-char",
-                  col.className
-                )}
+                className={cn("px-4 py-3 text-center", col.className)}
+                style={{
+                  fontWeight: 600,
+                  color: "#65675e",
+                  fontSize: "11px",
+                  textTransform: "uppercase",
+                  letterSpacing: "0.3px",
+                  fontFamily: "'IBM Plex Sans Variable', sans-serif",
+                }}
               >
                 {col.header}
               </th>
@@ -44,7 +74,12 @@ export default function Table<T>({
             <tr>
               <td
                 colSpan={columns.length}
-                className="px-4 py-8 text-center text-sage-gray"
+                style={{
+                  padding: "48px 24px",
+                  textAlign: "center",
+                  color: "#65675e",
+                  fontSize: "13px",
+                }}
               >
                 {emptyMessage}
               </td>
@@ -53,16 +88,32 @@ export default function Table<T>({
             data.map((row) => (
               <tr
                 key={String(row[keyField])}
-                className="border-b border-warm-mist last:border-b-0 hover:bg-pale-stone transition-colors duration-150"
+                style={{
+                  borderBottom: "1px solid #eeefe9",
+                  transition: "all 0.15s ease",
+                  cursor: "default",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = "#fdfdf8";
+                  e.currentTarget.style.boxShadow =
+                    "0 3px 10px rgba(0,0,0,0.04)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = "transparent";
+                  e.currentTarget.style.boxShadow = "none";
+                }}
               >
                 {columns.map((col) => (
                   <td
                     key={col.key}
-                    className={cn("px-4 py-3 text-center text-deep-moss", col.className)}
+                    className={cn("px-4 py-3 text-center", col.className)}
+                    style={{ color: "#23251d" }}
                   >
                     {col.render
                       ? col.render(row)
-                      : String((row as Record<string, unknown>)[col.key] ?? "")}
+                      : String(
+                          (row as Record<string, unknown>)[col.key] ?? ""
+                        )}
                   </td>
                 ))}
               </tr>
