@@ -134,7 +134,7 @@ export default function ReservationForm({ initialFacilityId }: { initialFacility
     }
 
     let cancelled = false;
-    fetch(`/api/facilities/${facilityId}/availability?date=${date}`)
+    fetch(`/controller/facilities/${facilityId}/availability?date=${date}`)
       .then((r) => r.json())
       .then((d) => {
         if (cancelled) return;

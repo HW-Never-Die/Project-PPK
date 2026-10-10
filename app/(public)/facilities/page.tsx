@@ -96,7 +96,7 @@ export default function FacilitiesPage() {
         if (filters.capacity) params.set("capacity", filters.capacity);
         if (filters.sort) params.set("sort", filters.sort);
 
-        const res = await fetch(`/api/facilities?${params.toString()}`);
+        const res = await fetch(`/controller/facilities?${params.toString()}`);
         const data = await res.json();
         if (!ignore && data?.data) {
           // ponytail: tampilkan active + maintenance di katalog publik (filter hanya inactive).

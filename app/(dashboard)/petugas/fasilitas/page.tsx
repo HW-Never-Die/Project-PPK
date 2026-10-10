@@ -46,7 +46,7 @@ export default function PetugasFasilitasPage() {
     const next = facility.status === "maintenance" ? "active" : "maintenance";
     setSaving(facility.id);
     try {
-      await fetch(`/api/facilities/${facility.id}`, {
+      await fetch(`/controller/facilities/${facility.id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status: next }),

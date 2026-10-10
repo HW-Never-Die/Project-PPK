@@ -28,7 +28,7 @@ export default function PetugasLaporanPage() {
 
   useEffect(() => {
     let ignore = false;
-    fetch(`/api/reports${filter ? `?status=${filter}` : ""}`)
+    fetch(`/controller/reports${filter ? `?status=${filter}` : ""}`)
       .then((r) => r.json())
       .then((d) => {
         if (!ignore) setReports(d.data ?? []);
@@ -58,7 +58,7 @@ export default function PetugasLaporanPage() {
   async function submitUpdate(id: number, status: string, resolution_notes: string) {
     setSaving(true);
     try {
-      await fetch(`/api/reports/${id}`, {
+      await fetch(`/controller/reports/${id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status, resolution_notes }),

@@ -47,7 +47,7 @@ export default function AdminUsersPage() {
     setLoading(true);
     try {
       const params = activeTab === "pending" ? "?status=pending" : "";
-      const res = await fetch(`/api/users${params}`);
+      const res = await fetch(`/controller/users${params}`);
       const data = await res.json();
       if (data.success) setUsers(data.data);
     } catch {
@@ -64,7 +64,7 @@ export default function AdminUsersPage() {
       setLoading(true);
       try {
         const params = activeTab === "pending" ? "?status=pending" : "";
-        const res = await fetch(`/api/users${params}`);
+        const res = await fetch(`/controller/users${params}`);
         const data = await res.json();
         if (!cancelled && data.success) setUsers(data.data);
       } catch {
@@ -86,7 +86,7 @@ export default function AdminUsersPage() {
   ) {
     setActionLoading(userId);
     try {
-      const res = await fetch(`/api/users/${userId}`, {
+      const res = await fetch(`/controller/users/${userId}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status }),
@@ -102,7 +102,7 @@ export default function AdminUsersPage() {
   async function handleDeleteUser(userId: number) {
     setActionLoading(userId);
     try {
-      const res = await fetch(`/api/users/${userId}`, {
+      const res = await fetch(`/controller/users/${userId}`, {
         method: "DELETE",
       });
       const data = await res.json();

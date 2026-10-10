@@ -264,7 +264,7 @@ export default function ReservationTable({ reservations, mode, activeTab = "", o
       if (action === "cancel") body.cancelReason = reason;
       if (action === "reject") body.rejectReason = reason;
 
-      const res = await fetch(`/api/reservations/${id}`, {
+      const res = await fetch(`/controller/reservations/${id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),

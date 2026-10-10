@@ -59,7 +59,7 @@ export default function AdminFacilitiesPage() {
         if (typeFilter) params.set("type", typeFilter);
         if (statusFilter) params.set("status", statusFilter);
 
-        const res = await fetch(`/api/facilities?${params.toString()}`);
+        const res = await fetch(`/controller/facilities?${params.toString()}`);
         const data = await res.json();
         if (!ignore && data?.data) {
           setFacilities(data.data);
@@ -113,7 +113,7 @@ export default function AdminFacilitiesPage() {
   const handleToggleStatus = async (fac: Facility) => {
     const newStatus: FacilityStatus = fac.status === "active" ? "inactive" : "active";
     try {
-      const res = await fetch(`/api/facilities/${fac.id}`, {
+      const res = await fetch(`/controller/facilities/${fac.id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status: newStatus }),
@@ -160,8 +160,8 @@ export default function AdminFacilitiesPage() {
       };
 
       const url = editingFacility
-        ? `/api/facilities/${editingFacility.id}`
-        : `/api/facilities`;
+        ? `/controller/facilities/${editingFacility.id}`
+        : `/controller/facilities`;
       const method = editingFacility ? "PUT" : "POST";
 
       const res = await fetch(url, {
