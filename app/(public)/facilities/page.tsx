@@ -6,7 +6,6 @@ import Link from "next/link";
 import { X, Info, AlertTriangle, Building2, CheckCircle2, Wrench, Layers } from "lucide-react";
 import FacilityCard from "@/views/facilities/FacilityCard";
 import FacilityFilter from "@/views/facilities/FacilityFilter";
-import SkyscraperBackground from "@/views/reservations/SkyscraperBackground";
 import { Facility } from "@/types";
 import { formatFacilityType } from "@/app/model/utils";
 
@@ -145,7 +144,6 @@ export default function FacilitiesPage() {
 
   return (
     <div className="flex-1 w-full max-w-6xl mx-auto p-6">
-      <SkyscraperBackground />
       {/* Panel background — satukan semua section (parity dgn layout dashboard) */}
       <div className="bg-white border border-[#d1d5db] rounded-lg shadow-sm p-6 min-h-[500px]" style={{ display: "flex", flexDirection: "column", gap: "18px" }}>
       {/* Breadcrumb Bar */}

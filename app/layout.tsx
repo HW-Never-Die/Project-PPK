@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import AuthProvider from "@/views/AuthProvider";
 import Navbar from "@/views/Navbar";
+import SkyscraperBackground from "@/views/reservations/SkyscraperBackground";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -17,6 +18,7 @@ export default function RootLayout({
   return (
     <html lang="id" className="h-full antialiased">
       <body className="min-h-full flex flex-col bg-[#eeefe9] font-sans text-[#23251d]">
+        <SkyscraperBackground />
         <AuthProvider>
           <Navbar />
           <div className="flex-1 flex flex-col relative z-0">
