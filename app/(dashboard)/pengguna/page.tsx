@@ -1,5 +1,5 @@
-import { prisma } from "@/lib/db";
-import { getSession } from "@/lib/auth";
+import { prisma } from "@/app/model/db";
+import { getSession } from "@/app/model/auth";
 import Link from "next/link";
 import {
   FileText,
@@ -9,7 +9,7 @@ import {
   ArrowRight,
   Plus,
 } from "lucide-react";
-import TagPill from "@/components/ui/TagPill";
+import TagPill from "@/views/ui/TagPill";
 
 export const dynamic = "force-dynamic";
 

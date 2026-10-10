@@ -4,11 +4,11 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { X, Info, AlertTriangle, Building2, CheckCircle2, Wrench, Layers } from "lucide-react";
-import FacilityCard from "@/components/facilities/FacilityCard";
-import FacilityFilter from "@/components/facilities/FacilityFilter";
-import SkyscraperBackground from "@/components/reservations/SkyscraperBackground";
+import FacilityCard from "@/views/facilities/FacilityCard";
+import FacilityFilter from "@/views/facilities/FacilityFilter";
+import SkyscraperBackground from "@/views/reservations/SkyscraperBackground";
 import { Facility } from "@/types";
-import { formatFacilityType } from "@/lib/utils";
+import { formatFacilityType } from "@/app/model/utils";
 
 function StatCard({
   label,
@@ -96,7 +96,7 @@ export default function FacilitiesPage() {
         if (filters.capacity) params.set("capacity", filters.capacity);
         if (filters.sort) params.set("sort", filters.sort);
 
-        const res = await fetch(`/api/facilities?${params.toString()}`);
+        const res = await fetch(`/controller/facilities?${params.toString()}`);
         const data = await res.json();
         if (!ignore && data?.data) {
           // ponytail: tampilkan active + maintenance di katalog publik (filter hanya inactive).

@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, useEffect, useReducer, useMemo } from "react";
-import ReservationTable from "@/components/reservations/ReservationTable";
-import SkyscraperBackground from "@/components/reservations/SkyscraperBackground";
+import ReservationTable from "@/views/reservations/ReservationTable";
+import SkyscraperBackground from "@/views/reservations/SkyscraperBackground";
 import Link from "next/link";
 import {
   Search,
@@ -47,7 +47,7 @@ export default function KelolaReservasiPetugasPage() {
 
   useEffect(() => {
     let cancelled = false;
-    fetch("/api/reservations")
+    fetch("/controller/reservations")
       .then((r) => r.json())
       .then((d) => {
         if (!cancelled) setReservations(d.data || []);

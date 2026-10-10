@@ -1,14 +1,14 @@
 "use client";
 
 import { useState, useEffect, useCallback, type FormEvent } from "react";
-import Button from "@/components/ui/Button";
-import Input from "@/components/ui/Input";
-import Select from "@/components/ui/Select";
-import Modal from "@/components/ui/Modal";
-import Table from "@/components/ui/Table";
-import TagPill from "@/components/ui/TagPill";
-import { USER_STATUS_LABELS, ROLE_LABELS } from "@/lib/constants";
-import { formatDate } from "@/lib/utils";
+import Button from "@/views/ui/Button";
+import Input from "@/views/ui/Input";
+import Select from "@/views/ui/Select";
+import Modal from "@/views/ui/Modal";
+import Table from "@/views/ui/Table";
+import TagPill from "@/views/ui/TagPill";
+import { USER_STATUS_LABELS, ROLE_LABELS } from "@/app/model/constants";
+import { formatDate } from "@/app/model/utils";
 
 type UserData = {
   id: number;
@@ -47,7 +47,7 @@ export default function AdminUsersPage() {
     setLoading(true);
     try {
       const params = activeTab === "pending" ? "?status=pending" : "";
-      const res = await fetch(`/api/users${params}`);
+      const res = await fetch(`/controller/users${params}`);
       const data = await res.json();
       if (data.success) setUsers(data.data);
     } catch {
@@ -64,7 +64,7 @@ export default function AdminUsersPage() {
       setLoading(true);
       try {
         const params = activeTab === "pending" ? "?status=pending" : "";
-        const res = await fetch(`/api/users${params}`);
+        const res = await fetch(`/controller/users${params}`);
         const data = await res.json();
         if (!cancelled && data.success) setUsers(data.data);
       } catch {
@@ -86,7 +86,7 @@ export default function AdminUsersPage() {
   ) {
     setActionLoading(userId);
     try {
-      const res = await fetch(`/api/users/${userId}`, {
+      const res = await fetch(`/controller/users/${userId}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status }),
@@ -102,7 +102,7 @@ export default function AdminUsersPage() {
   async function handleDeleteUser(userId: number) {
     setActionLoading(userId);
     try {
-      const res = await fetch(`/api/users/${userId}`, {
+      const res = await fetch(`/controller/users/${userId}`, {
         method: "DELETE",
       });
       const data = await res.json();
@@ -125,7 +125,7 @@ export default function AdminUsersPage() {
     setCreateLoading(true);
 
     try {
-      const res = await fetch("/api/users", {
+      const res = await fetch("/controller/users", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

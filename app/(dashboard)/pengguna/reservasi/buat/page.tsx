@@ -1,8 +1,8 @@
 "use client";
 
 import { Suspense } from "react";
-import ReservationForm from "@/components/reservations/ReservationForm";
-import SkyscraperBackground from "@/components/reservations/SkyscraperBackground";
+import ReservationForm from "@/views/reservations/ReservationForm";
+import SkyscraperBackground from "@/views/reservations/SkyscraperBackground";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { useSearchParams } from "next/navigation";

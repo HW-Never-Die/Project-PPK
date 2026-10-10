@@ -2,8 +2,8 @@
 
 import { useEffect, useState, useReducer, useMemo } from "react";
 import Link from "next/link";
-import ReportTable from "@/components/reports/ReportTable";
-import SkyscraperBackground from "@/components/reservations/SkyscraperBackground";
+import ReportTable from "@/views/reports/ReportTable";
+import SkyscraperBackground from "@/views/reservations/SkyscraperBackground";
 import {
   Plus,
   Search,
@@ -44,7 +44,7 @@ export default function RiwayatLaporanPage() {
 
   useEffect(() => {
     let cancelled = false;
-    fetch("/api/reports/my")
+    fetch("/controller/reports/my")
       .then((r) => r.json())
       .then((d) => {
         if (!cancelled) setReports(d.data ?? []);

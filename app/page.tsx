@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useAuth } from "@/components/AuthProvider";
+import { useAuth } from "@/views/AuthProvider";
 import {
   CalendarDays,
   Building2,

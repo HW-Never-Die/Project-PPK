@@ -3,10 +3,10 @@
 import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import Button from "@/components/ui/Button";
-import Input from "@/components/ui/Input";
-import { useAuth } from "@/components/AuthProvider";
-import { ROLE_DEFAULT_ROUTES } from "@/lib/constants";
+import Button from "@/views/ui/Button";
+import Input from "@/views/ui/Input";
+import { useAuth } from "@/views/AuthProvider";
+import { ROLE_DEFAULT_ROUTES } from "@/app/model/constants";
 
 /**
  * DESIGN.md — Login page
@@ -31,7 +31,7 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
-      const res = await fetch("/api/auth/login", {
+      const res = await fetch("/controller/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
