@@ -1,7 +1,7 @@
-import { prisma } from "@/lib/db";
+import { prisma } from "@/app/model/db";
 import Link from "next/link";
 import { Calendar, FileText, ArrowRight } from "lucide-react";
-import TagPill from "@/components/ui/TagPill";
+import TagPill from "@/views/ui/TagPill";
 
 export const dynamic = "force-dynamic";
 

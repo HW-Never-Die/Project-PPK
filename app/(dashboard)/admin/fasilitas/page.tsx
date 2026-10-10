@@ -10,9 +10,9 @@ import {
   X,
   AlertCircle,
 } from "lucide-react";
-import TagPill from "@/components/ui/TagPill";
+import TagPill from "@/views/ui/TagPill";
 import { Facility, FacilityType, FacilityStatus } from "@/types";
-import { formatFacilityType } from "@/lib/utils";
+import { formatFacilityType } from "@/app/model/utils";
 
 interface FacilityFormData {
   name: string;

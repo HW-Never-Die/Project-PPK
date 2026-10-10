@@ -1,5 +1,5 @@
 import Link from "next/link";
-import Button from "@/components/ui/Button";
+import Button from "@/views/ui/Button";
 
 /**
  * DESIGN.md — 404 Not Found page

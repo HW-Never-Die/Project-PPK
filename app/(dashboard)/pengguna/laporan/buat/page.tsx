@@ -1,4 +1,4 @@
-import ReportForm from "@/components/reports/ReportForm";
+import ReportForm from "@/views/reports/ReportForm";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 

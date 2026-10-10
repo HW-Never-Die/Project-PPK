@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import TagPill from "@/components/ui/TagPill";
+import TagPill from "@/views/ui/TagPill";
 import { Building2 } from "lucide-react";
 
 interface Facility {

@@ -2,8 +2,8 @@
 
 import { useState, type FormEvent } from "react";
 import Link from "next/link";
-import Button from "@/components/ui/Button";
-import Input from "@/components/ui/Input";
+import Button from "@/views/ui/Button";
+import Input from "@/views/ui/Input";
 
 /**
  * DESIGN.md — Register page

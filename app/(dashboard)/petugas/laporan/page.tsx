@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import ReportTable from "@/components/reports/ReportTable";
+import ReportTable from "@/views/reports/ReportTable";
 
 interface Report {
   id: number;

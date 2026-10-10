@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, useEffect, useReducer, useMemo } from "react";
-import ReservationTable from "@/components/reservations/ReservationTable";
-import SkyscraperBackground from "@/components/reservations/SkyscraperBackground";
+import ReservationTable from "@/views/reservations/ReservationTable";
+import SkyscraperBackground from "@/views/reservations/SkyscraperBackground";
 import Link from "next/link";
 import {
   Search,

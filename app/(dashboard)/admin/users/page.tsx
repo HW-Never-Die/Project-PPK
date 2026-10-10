@@ -1,14 +1,14 @@
 "use client";
 
 import { useState, useEffect, useCallback, type FormEvent } from "react";
-import Button from "@/components/ui/Button";
-import Input from "@/components/ui/Input";
-import Select from "@/components/ui/Select";
-import Modal from "@/components/ui/Modal";
-import Table from "@/components/ui/Table";
-import TagPill from "@/components/ui/TagPill";
-import { USER_STATUS_LABELS, ROLE_LABELS } from "@/lib/constants";
-import { formatDate } from "@/lib/utils";
+import Button from "@/views/ui/Button";
+import Input from "@/views/ui/Input";
+import Select from "@/views/ui/Select";
+import Modal from "@/views/ui/Modal";
+import Table from "@/views/ui/Table";
+import TagPill from "@/views/ui/TagPill";
+import { USER_STATUS_LABELS, ROLE_LABELS } from "@/app/model/constants";
+import { formatDate } from "@/app/model/utils";
 
 type UserData = {
   id: number;
