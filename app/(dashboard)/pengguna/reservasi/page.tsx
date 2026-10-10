@@ -643,19 +643,19 @@ export default function RiwayatReservasiPage() {
       </div>
 
       <style>{`
+        body > .relative.z-0:has(.reservation-page-wrapper) {
+          z-index: auto;
+        }
         @keyframes reservationTabFade {
           0% {
             opacity: 0;
-            transform: translateY(3px);
           }
           100% {
             opacity: 1;
-            transform: translateY(0);
           }
         }
         .reservation-tab-content {
           animation: reservationTabFade 0.16s cubic-bezier(0.16, 1, 0.3, 1);
-          will-change: opacity, transform;
         }
       `}</style>
 
