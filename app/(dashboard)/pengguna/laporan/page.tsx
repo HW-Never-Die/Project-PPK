@@ -3,7 +3,6 @@
 import { useEffect, useState, useReducer, useMemo } from "react";
 import Link from "next/link";
 import ReportTable from "@/views/reports/ReportTable";
-import SkyscraperBackground from "@/views/reservations/SkyscraperBackground";
 import {
   Plus,
   Search,
@@ -87,8 +86,7 @@ export default function RiwayatLaporanPage() {
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "18px" }}>
-      <SkyscraperBackground />
-      <div
+            <div
         style={{
           display: "flex",
           alignItems: "center",

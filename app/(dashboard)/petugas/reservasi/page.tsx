@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useReducer, useMemo } from "react";
 import ReservationTable from "@/views/reservations/ReservationTable";
-import SkyscraperBackground from "@/views/reservations/SkyscraperBackground";
 import Link from "next/link";
 import {
   Search,
@@ -97,8 +96,7 @@ export default function KelolaReservasiPetugasPage() {
 
   return (
     <div className="reservation-page-wrapper" style={{ display: "flex", flexDirection: "column", gap: "18px" }}>
-      <SkyscraperBackground />
-
+      
       <div
         style={{
           display: "flex",

@@ -61,9 +61,10 @@ export default function RegisterPage() {
       style={{
         display: "flex",
         minHeight: "100vh",
+        /* sky transparent for global SkyscraperBackground */
+        // backgroundColor: "#eeefe9",
         alignItems: "center",
         justifyContent: "center",
-        backgroundColor: "#eeefe9",
         padding: "16px",
       }}
     >

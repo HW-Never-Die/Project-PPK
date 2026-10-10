@@ -2,7 +2,6 @@
 
 import { Suspense } from "react";
 import ReservationForm from "@/views/reservations/ReservationForm";
-import SkyscraperBackground from "@/views/reservations/SkyscraperBackground";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { useSearchParams } from "next/navigation";
@@ -19,8 +18,7 @@ function BuatReservasiContent() {
 export default function BuatReservasiPage() {
   return (
     <div className="reservation-page-wrapper" style={{ width: "100%", margin: "0 auto" }}>
-      <SkyscraperBackground />
-
+      
       <div
         style={{
           display: "flex",
