@@ -125,7 +125,7 @@ export default function AdminUsersPage() {
     setCreateLoading(true);
 
     try {
-      const res = await fetch("/api/users", {
+      const res = await fetch("/controller/users", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

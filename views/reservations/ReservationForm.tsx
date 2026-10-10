@@ -95,7 +95,7 @@ export default function ReservationForm({ initialFacilityId }: { initialFacility
 
   useEffect(() => {
     let cancelled = false;
-    fetch("/api/facilities")
+    fetch("/controller/facilities")
       .then((r) => r.json())
       .then((d) => {
         if (cancelled) return;
@@ -291,7 +291,7 @@ export default function ReservationForm({ initialFacilityId }: { initialFacility
 
     setLoading(true);
     try {
-      const res = await fetch("/api/reservations", {
+      const res = await fetch("/controller/reservations", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

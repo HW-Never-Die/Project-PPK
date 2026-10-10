@@ -74,7 +74,7 @@ export default function RiwayatReservasiPage() {
 
   useEffect(() => {
     let cancelled = false;
-    fetch("/api/reservations/my")
+    fetch("/controller/reservations/my")
       .then((r) => r.json())
       .then((d) => {
         if (!cancelled) setReservations(d.data || []);

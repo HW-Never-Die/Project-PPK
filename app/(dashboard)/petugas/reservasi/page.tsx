@@ -47,7 +47,7 @@ export default function KelolaReservasiPetugasPage() {
 
   useEffect(() => {
     let cancelled = false;
-    fetch("/api/reservations")
+    fetch("/controller/reservations")
       .then((r) => r.json())
       .then((d) => {
         if (!cancelled) setReservations(d.data || []);

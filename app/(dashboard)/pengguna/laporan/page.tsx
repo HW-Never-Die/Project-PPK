@@ -44,7 +44,7 @@ export default function RiwayatLaporanPage() {
 
   useEffect(() => {
     let cancelled = false;
-    fetch("/api/reports/my")
+    fetch("/controller/reports/my")
       .then((r) => r.json())
       .then((d) => {
         if (!cancelled) setReports(d.data ?? []);

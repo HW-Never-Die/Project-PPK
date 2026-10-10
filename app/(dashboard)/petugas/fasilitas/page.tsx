@@ -29,7 +29,7 @@ export default function PetugasFasilitasPage() {
 
   useEffect(() => {
     let ignore = false;
-    fetch("/api/facilities")
+    fetch("/controller/facilities")
       .then((r) => r.json())
       .then((d) => {
         if (!ignore) setFacilities(d.data ?? []);

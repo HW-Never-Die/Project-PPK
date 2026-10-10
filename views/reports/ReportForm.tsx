@@ -45,7 +45,7 @@ export default function ReportForm({ onSuccess }: ReportFormProps) {
   };
 
   useEffect(() => {
-    fetch("/api/facilities")
+    fetch("/controller/facilities")
       .then(res => res.json())
       .then(data => {
         const sorted = (data.data ?? []).sort((a: Facility, b: Facility) => a.id - b.id);
@@ -63,7 +63,7 @@ export default function ReportForm({ onSuccess }: ReportFormProps) {
     try {
       const fd = new FormData();
       fd.append("file", file);
-      const res = await fetch("/api/upload", { method: "POST", body: fd });
+      const res = await fetch("/controller/upload", { method: "POST", body: fd });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? "Upload gagal");
       setPhotoUrl(data.url);
@@ -83,7 +83,7 @@ export default function ReportForm({ onSuccess }: ReportFormProps) {
     setSubmitting(true);
     setError(null);
     try {
-      const res = await fetch("/api/reports", {
+      const res = await fetch("/controller/reports", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

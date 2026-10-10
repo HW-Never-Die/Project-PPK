@@ -36,7 +36,7 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
 
   const refresh = useCallback(async () => {
     try {
-      const res = await fetch("/api/auth/me");
+      const res = await fetch("/controller/auth/me");
       if (res.ok) {
         const data = await res.json();
         setUser(data.data);
@@ -51,7 +51,7 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const logout = useCallback(async () => {
-    await fetch("/api/auth/logout", { method: "POST" });
+    await fetch("/controller/auth/logout", { method: "POST" });
     setUser(null);
     router.push("/login");
   }, [router]);
@@ -61,7 +61,7 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
 
     async function init() {
       try {
-        const res = await fetch("/api/auth/me");
+        const res = await fetch("/controller/auth/me");
         if (!cancelled) {
           if (res.ok) {
             const data = await res.json();
