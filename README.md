@@ -1,36 +1,85 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Eunomia — Reservasi & Pelaporan Fasilitas Kampus Terpadu
 
-## Getting Started
+Platform terpusat untuk mahasiswa, dosen, dan staf Fakultas Sains dan Matematika
+Universitas Diponegoro (FSM Undip) untuk reservasi fasilitas kampus dan pelaporan
+kendala sarana prasarana dalam satu sistem terintegrasi.
 
-First, run the development server:
+## Tujuan
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+Menggantikan proses peminjaman ruangan manual (catat kertas / chat) dengan sistem
+digital yang transparan: ketersediaan slot waktu terlihat jelas, pengajuan tercatat,
+dan laporan kerusakan terdokumentasi dengan foto.
+
+## Fitur
+
+**Pengguna (mahasiswa / dosen / staf)**
+
+- Katalog 20 fasilitas kampus: aula, 3 lab komputer, 10 ruang kelas, 3 lapangan
+  olahraga, 3 alat elektronik — lengkap dengan foto, lokasi, dan kapasitas
+- Reservasi fasilitas dengan slot waktu operasional 07:00–20:00 yang transparan
+- Riwayat reservasi + pembatalan mandiri
+- Pelaporan kerusakan / kebersihan / keamanan fasilitas disertai foto
+- Riwayat laporan + status penanganan
+
+**Petugas**
+
+- Verifikasi (approve / reject) pengajuan reservasi
+- Penanganan laporan fasilitas (in_progress / resolved / rejected)
+- Update status fasilitas (active / maintenance / inactive)
+
+**Admin**
+
+- Verifikasi akun pengguna baru (pending → verified / rejected)
+- CRUD fasilitas + upload foto
+- Kelola seluruh pengguna, reservasi, dan laporan
+- Rekap data + export Excel / PDF
+
+**Sistem**
+
+- Auth JWT (cookie httpOnly) dengan 3 role: `admin`, `petugas`, `pengguna`
+- Proteksi route per role via middleware
+- Upload foto laporan (tersimpan di `public/uploads`)
+
+## Teknologi
+
+Next.js 16 (App Router) · React 19 · Prisma 5 · MySQL · Tailwind CSS 4
+
+## Cara Menjalankan
+
+### 1. Syarat
+
+- Node.js 20+
+- MySQL berjalan (XAMPP / Laragon / standalone)
+
+### 2. Buat database
+
+```sql
+CREATE DATABASE eunomia;
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 3. Buat file `.env`
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Lihat panduan lengkap di **[ENV.md](./ENV.md)** — di situ dijelaskan variabel apa
+saja yang wajib diganti (user MySQL, nama DB, JWT secret).
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 4. Install, migrate, seed, jalan
 
-## Learn More
+```powershell
+npm install
+npx prisma migrate deploy
+npx prisma db seed
+npm run dev
+```
 
-To learn more about Next.js, take a look at the following resources:
+Buka http://localhost:3000 di browser.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### 5. Akun bawaan (setelah seed)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+| Email | Password | Role |
+|---|---|---|
+| `admin@eunomia.ac.id` | `admin123` | admin |
+| `petugas1@eunomia.ac.id` | `petugas123` | petugas |
+| `budi@student.ac.id` | `user123` | pengguna |
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Registrasi akun baru berstatus `pending` dan harus diverifikasi admin dulu
+sebelum bisa login.
