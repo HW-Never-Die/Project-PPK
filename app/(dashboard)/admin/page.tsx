@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/db";
+import { prisma } from "@/app/model/db";
 import { Building2, Users, Calendar, FileText } from "lucide-react";
 
 export const dynamic = "force-dynamic";

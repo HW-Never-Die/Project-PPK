@@ -3,11 +3,18 @@
 import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import Button from "@/components/ui/Button";
-import Input from "@/components/ui/Input";
-import { useAuth } from "@/components/AuthProvider";
-import { ROLE_DEFAULT_ROUTES } from "@/lib/constants";
+import Button from "@/views/ui/Button";
+import Input from "@/views/ui/Input";
+import { useAuth } from "@/views/AuthProvider";
+import { ROLE_DEFAULT_ROUTES } from "@/app/model/constants";
 
+/**
+ * DESIGN.md — Login page
+ * Global BG: #eeefe9, Card: bg #ffffff, radius 8px, border #d1d5db, shadow
+ * H1: 22px, weight 800, letterSpacing -0.5px, color #111827
+ * Subtitle: 14px, color #4B5563
+ * Error Banner: §4.12 — bg #fef2f2, border rgba(245,78,0,0.25), radius 6px
+ */
 export default function LoginPage() {
   const router = useRouter();
   const { refresh } = useAuth();
@@ -24,7 +31,7 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
-      const res = await fetch("/api/auth/login", {
+      const res = await fetch("/controller/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
@@ -56,23 +63,74 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-sandy-desk px-4">
-      <div className="w-full max-w-md rounded-[6px] border border-warm-mist bg-paper-white">
-        <div className="p-8">
-          <h1 className="text-heading-lg font-bold tracking-heading-lg text-deep-moss mb-2">
+    <div
+      style={{
+        display: "flex",
+        minHeight: "100vh",
+        /* sky transparent for global SkyscraperBackground */
+        // backgroundColor: "#eeefe9",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: "16px",
+      }}
+    >
+      <div
+        style={{
+          width: "100%",
+          maxWidth: "460px",
+          backgroundColor: "#ffffff",
+          borderRadius: "8px",
+          border: "1px solid #d1d5db",
+          boxShadow: "0 4px 16px rgba(0,0,0,0.04)",
+        }}
+      >
+        <div style={{ padding: "32px" }}>
+          {/* H1 — §2.2: 22px, weight 800, letterSpacing -0.5px */}
+          <h1
+            style={{
+              fontSize: "22px",
+              fontWeight: 800,
+              color: "#111827",
+              letterSpacing: "-0.5px",
+              fontFamily: "'Open Runde', sans-serif",
+              marginBottom: "6px",
+            }}
+          >
             Masuk
           </h1>
-          <p className="text-caption text-sage-gray mb-6">
+          <p
+            style={{
+              fontSize: "14px",
+              color: "#4B5563",
+              fontFamily: "'IBM Plex Sans Variable', sans-serif",
+              marginBottom: "24px",
+            }}
+          >
             Masuk ke akun Eunomia untuk mengelola reservasi dan laporan
           </p>
 
+          {/* Error Banner — §4.12 */}
           {generalError && (
-            <div className="mb-4 rounded-md border border-flame-orange/30 bg-flame-orange/10 px-3 py-2 text-caption text-flame-orange">
+            <div
+              style={{
+                marginBottom: "16px",
+                borderRadius: "6px",
+                border: "1px solid rgba(245,78,0,0.25)",
+                backgroundColor: "#fef2f2",
+                padding: "10px 14px",
+                fontSize: "13px",
+                color: "#f54e00",
+                fontFamily: "'IBM Plex Sans Variable', sans-serif",
+              }}
+            >
               {generalError}
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+          <form
+            onSubmit={handleSubmit}
+            style={{ display: "flex", flexDirection: "column", gap: "16px" }}
+          >
             <Input
               label="Email"
               type="email"
@@ -96,11 +154,23 @@ export default function LoginPage() {
             </Button>
           </form>
 
-          <p className="mt-6 text-center text-caption text-sage-gray">
+          <p
+            style={{
+              marginTop: "24px",
+              textAlign: "center",
+              fontSize: "13px",
+              color: "#65675e",
+              fontFamily: "'IBM Plex Sans Variable', sans-serif",
+            }}
+          >
             Belum punya akun?{" "}
             <Link
               href="/register"
-              className="text-signal-blue underline underline-offset-2 decoration-signal-blue/50 hover:decoration-signal-blue"
+              style={{
+                color: "#2f80fa",
+                textDecoration: "underline",
+                textUnderlineOffset: "2px",
+              }}
             >
               Daftar di sini
             </Link>

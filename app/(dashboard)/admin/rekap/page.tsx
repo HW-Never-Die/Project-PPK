@@ -43,7 +43,7 @@ export default function AdminRekapPage() {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch(`/api/export?format=csv&report=${reportType}&from=${from}&to=${to}`);
+      const res = await fetch(`/controller/export?format=csv&report=${reportType}&from=${from}&to=${to}`);
       if (!res.ok) throw new Error("Gagal memuat preview");
       const text = await res.text();
       const result = Papa.parse<PreviewRow>(text, { header: true, skipEmptyLines: true });
@@ -56,7 +56,7 @@ export default function AdminRekapPage() {
   }
 
   function download(format: "csv" | "excel" | "pdf") {
-    const url = `/api/export?format=${format}&report=${reportType}&from=${from}&to=${to}`;
+    const url = `/controller/export?format=${format}&report=${reportType}&from=${from}&to=${to}`;
     const a = document.createElement("a");
     a.href = url;
     a.download = `rekap-${reportType}.${format === "excel" ? "xlsx" : format}`;

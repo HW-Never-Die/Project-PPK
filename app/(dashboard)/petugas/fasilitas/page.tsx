@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import TagPill from "@/components/ui/TagPill";
+import TagPill from "@/views/ui/TagPill";
 import { Building2 } from "lucide-react";
 
 interface Facility {
@@ -29,7 +29,7 @@ export default function PetugasFasilitasPage() {
 
   useEffect(() => {
     let ignore = false;
-    fetch("/api/facilities")
+    fetch("/controller/facilities")
       .then((r) => r.json())
       .then((d) => {
         if (!ignore) setFacilities(d.data ?? []);
@@ -46,7 +46,7 @@ export default function PetugasFasilitasPage() {
     const next = facility.status === "maintenance" ? "active" : "maintenance";
     setSaving(facility.id);
     try {
-      await fetch(`/api/facilities/${facility.id}`, {
+      await fetch(`/controller/facilities/${facility.id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status: next }),
@@ -66,7 +66,7 @@ export default function PetugasFasilitasPage() {
     fontWeight: 600,
     color: "#65675e",
     fontFamily: "'IBM Plex Sans Variable', sans-serif",
-    borderBottom: "1px solid #bfc1b7",
+    borderBottom: "1px solid #e5e7e0",
     whiteSpace: "nowrap",
   };
 
@@ -85,16 +85,17 @@ export default function PetugasFasilitasPage() {
       <div style={{ marginBottom: "20px" }}>
         <h1
           style={{
-            fontSize: "24px",
+            fontSize: "22px",
             fontWeight: 800,
             color: "#111827",
             letterSpacing: "-0.5px",
             marginBottom: "4px",
+            fontFamily: "'Open Runde', sans-serif",
           }}
         >
           Status Fasilitas
         </h1>
-        <p style={{ fontSize: "16px", color: "#4B5563", fontWeight: 500 }}>
+        <p style={{ fontSize: "14px", color: "#4B5563", fontWeight: 400, fontFamily: "'IBM Plex Sans Variable', sans-serif", lineHeight: 1.5 }}>
           Tandai fasilitas dalam perbaikan atau kembalikan ke aktif
         </p>
       </div>
@@ -105,8 +106,8 @@ export default function PetugasFasilitasPage() {
         <div
           style={{
             backgroundColor: "#ffffff",
-            border: "1px solid #bfc1b7",
-            borderRadius: "6px",
+            border: "1px solid #e5e7e0",
+            borderRadius: "8px",
             padding: "48px 32px",
             textAlign: "center",
             color: "#9ea096",
@@ -120,8 +121,8 @@ export default function PetugasFasilitasPage() {
         <div
           style={{
             backgroundColor: "#ffffff",
-            border: "1px solid #bfc1b7",
-            borderRadius: "6px",
+            border: "1px solid #e5e7e0",
+            borderRadius: "8px",
             overflow: "hidden",
           }}
         >
@@ -151,16 +152,27 @@ export default function PetugasFasilitasPage() {
                         disabled={saving === f.id}
                         onClick={() => toggleStatus(f)}
                         style={{
-                          padding: "4px 10px",
-                          border: "1px solid",
-                          borderRadius: "4px",
+                          position: "relative",
+                          top: 0,
+                          padding: "5px 12px",
+                          border: `1px solid ${f.status === "maintenance" ? "#6aa84f" : "#d88c22"}`,
+                          borderRadius: "6px",
                           fontSize: "12px",
-                          fontWeight: 500,
+                          fontWeight: 600,
                           cursor: saving === f.id ? "not-allowed" : "pointer",
                           fontFamily: "'IBM Plex Sans Variable', sans-serif",
-                          backgroundColor: "transparent",
-                          borderColor: f.status === "maintenance" ? "#6aa84f" : "#eb9d2a",
-                          color: f.status === "maintenance" ? "#6aa84f" : "#cd8407",
+                          backgroundColor: f.status === "maintenance" ? "#f6faf3" : "#fdfaf3",
+                          color: f.status === "maintenance" ? "#3d7a1c" : "#cd8407",
+                          boxShadow: "0 2px 0 0 rgba(0,0,0,0.08)",
+                          transition: "all 0.1s ease",
+                        }}
+                        onMouseDown={(e) => {
+                          e.currentTarget.style.top = "1.5px";
+                          e.currentTarget.style.boxShadow = "none";
+                        }}
+                        onMouseUp={(e) => {
+                          e.currentTarget.style.top = "0px";
+                          e.currentTarget.style.boxShadow = "0 2px 0 0 rgba(0,0,0,0.08)";
                         }}
                       >
                         {saving === f.id

@@ -1,14 +1,14 @@
 "use client";
 
 import { useState, useEffect, useCallback, type FormEvent } from "react";
-import Button from "@/components/ui/Button";
-import Input from "@/components/ui/Input";
-import Select from "@/components/ui/Select";
-import Modal from "@/components/ui/Modal";
-import Table from "@/components/ui/Table";
-import TagPill from "@/components/ui/TagPill";
-import { USER_STATUS_LABELS, ROLE_LABELS } from "@/lib/constants";
-import { formatDate } from "@/lib/utils";
+import Button from "@/views/ui/Button";
+import Input from "@/views/ui/Input";
+import Select from "@/views/ui/Select";
+import Modal from "@/views/ui/Modal";
+import Table from "@/views/ui/Table";
+import TagPill from "@/views/ui/TagPill";
+import { USER_STATUS_LABELS, ROLE_LABELS } from "@/app/model/constants";
+import { formatDate } from "@/app/model/utils";
 
 type UserData = {
   id: number;
@@ -21,6 +21,13 @@ type UserData = {
 
 type Tab = "pending" | "all";
 
+/**
+ * DESIGN.md — Admin Users page
+ * H1: §2.2 — 22px, weight 800, letterSpacing -0.5px, color #111827
+ * Tab Bar: §4.3 — Container bg #f5f5f0, padding 3px, radius 6px, border #e5e7e0
+ * Active tab: bg #ffffff, weight 600, color #23251d, shadow
+ * Inactive tab: bg transparent, weight 500, color #65675e
+ */
 export default function AdminUsersPage() {
   const [users, setUsers] = useState<UserData[]>([]);
   const [activeTab, setActiveTab] = useState<Tab>("pending");
@@ -40,7 +47,7 @@ export default function AdminUsersPage() {
     setLoading(true);
     try {
       const params = activeTab === "pending" ? "?status=pending" : "";
-      const res = await fetch(`/api/users${params}`);
+      const res = await fetch(`/controller/users${params}`);
       const data = await res.json();
       if (data.success) setUsers(data.data);
     } catch {
@@ -57,7 +64,7 @@ export default function AdminUsersPage() {
       setLoading(true);
       try {
         const params = activeTab === "pending" ? "?status=pending" : "";
-        const res = await fetch(`/api/users${params}`);
+        const res = await fetch(`/controller/users${params}`);
         const data = await res.json();
         if (!cancelled && data.success) setUsers(data.data);
       } catch {
@@ -68,7 +75,9 @@ export default function AdminUsersPage() {
     }
 
     load();
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, [activeTab]);
 
   async function handleUpdateStatus(
@@ -77,7 +86,7 @@ export default function AdminUsersPage() {
   ) {
     setActionLoading(userId);
     try {
-      const res = await fetch(`/api/users/${userId}`, {
+      const res = await fetch(`/controller/users/${userId}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status }),
@@ -93,7 +102,7 @@ export default function AdminUsersPage() {
   async function handleDeleteUser(userId: number) {
     setActionLoading(userId);
     try {
-      const res = await fetch(`/api/users/${userId}`, {
+      const res = await fetch(`/controller/users/${userId}`, {
         method: "DELETE",
       });
       const data = await res.json();
@@ -116,7 +125,7 @@ export default function AdminUsersPage() {
     setCreateLoading(true);
 
     try {
-      const res = await fetch("/api/users", {
+      const res = await fetch("/controller/users", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -155,6 +164,11 @@ export default function AdminUsersPage() {
     }
   }
 
+  const tabs: { key: Tab; label: string }[] = [
+    { key: "pending", label: "Menunggu Verifikasi" },
+    { key: "all", label: "Semua User" },
+  ];
+
   const columns = [
     { key: "name", header: "Nama" },
     { key: "email", header: "Email" },
@@ -162,7 +176,14 @@ export default function AdminUsersPage() {
       key: "role",
       header: "Role",
       render: (row: UserData) => (
-        <span className="text-caption">{ROLE_LABELS[row.role] || row.role}</span>
+        <span
+          style={{
+            fontSize: "13px",
+            fontFamily: "'IBM Plex Sans Variable', sans-serif",
+          }}
+        >
+          {ROLE_LABELS[row.role] || row.role}
+        </span>
       ),
     },
     {
@@ -178,7 +199,13 @@ export default function AdminUsersPage() {
       key: "createdAt",
       header: "Terdaftar",
       render: (row: UserData) => (
-        <span className="text-micro text-sage-gray">
+        <span
+          style={{
+            fontSize: "12px",
+            color: "#65675e",
+            fontFamily: "'IBM Plex Sans Variable', sans-serif",
+          }}
+        >
           {formatDate(row.createdAt)}
         </span>
       ),
@@ -189,7 +216,7 @@ export default function AdminUsersPage() {
             key: "actions",
             header: "Aksi",
             render: (row: UserData) => (
-              <div className="flex justify-center gap-2">
+              <div style={{ display: "flex", justifyContent: "center", gap: "8px" }}>
                 <Button
                   size="sm"
                   variant="primary"
@@ -215,7 +242,7 @@ export default function AdminUsersPage() {
             key: "actions",
             header: "Aksi",
             render: (row: UserData) => (
-              <div className="flex justify-center gap-2">
+              <div style={{ display: "flex", justifyContent: "center", gap: "8px" }}>
                 {row.role !== "admin" ? (
                   <Button
                     size="sm"
@@ -234,7 +261,7 @@ export default function AdminUsersPage() {
                     Hapus
                   </Button>
                 ) : (
-                  <span className="text-micro text-sage-gray">—</span>
+                  <span style={{ fontSize: "12px", color: "#65675e" }}>—</span>
                 )}
               </div>
             ),
@@ -243,64 +270,130 @@ export default function AdminUsersPage() {
   ];
 
   return (
-    <div>
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-heading-lg font-bold tracking-heading-lg text-deep-moss">
+    <div style={{ display: "flex", flexDirection: "column", gap: "18px" }}>
+      {/* Header */}
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+      >
+        <h1
+          style={{
+            fontSize: "22px",
+            fontWeight: 800,
+            color: "#111827",
+            letterSpacing: "-0.5px",
+            fontFamily: "'Open Runde', sans-serif",
+          }}
+        >
           Kelola User
         </h1>
         <Button onClick={() => setModalOpen(true)}>Buat User Baru</Button>
       </div>
 
-      <div className="flex gap-1 mb-4">
-        {(
-          [
-            { key: "pending", label: "Menunggu Verifikasi" },
-            { key: "all", label: "Semua User" },
-          ] as const
-        ).map((tab) => (
+      {/* Tab Bar — §4.3 */}
+      <div
+        style={{
+          backgroundColor: "#f5f5f0",
+          padding: "3px",
+          borderRadius: "6px",
+          border: "1px solid #e5e7e0",
+          display: "inline-flex",
+          gap: "4px",
+          alignSelf: "flex-start",
+        }}
+      >
+        {tabs.map((tab) => (
           <button
             key={tab.key}
             onClick={() => setActiveTab(tab.key)}
-            className={`px-3 py-2 text-caption font-medium font-ibm-plex-sans-variable rounded-t-md transition-colors duration-150 cursor-pointer ${
-              activeTab === tab.key
-                ? "bg-paper-white text-signal-blue border-b-2 border-signal-blue"
-                : "text-sage-gray hover:text-deep-moss"
-            }`}
+            style={{
+              padding: "5px 12px",
+              fontSize: "12px",
+              borderRadius: "4px",
+              border: "none",
+              cursor: "pointer",
+              fontFamily: "'IBM Plex Sans Variable', sans-serif",
+              fontWeight: activeTab === tab.key ? 600 : 500,
+              color: activeTab === tab.key ? "#23251d" : "#65675e",
+              backgroundColor: activeTab === tab.key ? "#ffffff" : "transparent",
+              boxShadow:
+                activeTab === tab.key
+                  ? "0 1px 2px rgba(0,0,0,0.06)"
+                  : "none",
+              transition: "all 0.15s ease",
+            }}
           >
             {tab.label}
           </button>
         ))}
       </div>
 
-      {loading ? (
-        <div className="flex items-center justify-center py-12 text-sage-gray">
-          Memuat data...
-        </div>
-      ) : (
-        <Table
-          columns={columns}
-          data={users}
-          keyField="id"
-          emptyMessage={
-            activeTab === "pending"
-              ? "Tidak ada akun yang menunggu verifikasi"
-              : "Belum ada user terdaftar"
-          }
-        />
-      )}
+      {/* Content with tab animation */}
+      <div
+        key={activeTab}
+        style={{
+          animation: "reservationTabFade 0.16s cubic-bezier(0.16, 1, 0.3, 1)",
+        }}
+      >
+        {loading ? (
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              padding: "48px 24px",
+              color: "#65675e",
+              fontSize: "13px",
+              fontFamily: "'IBM Plex Sans Variable', sans-serif",
+            }}
+          >
+            Memuat data...
+          </div>
+        ) : (
+          <Table
+            columns={columns}
+            data={users}
+            keyField="id"
+            emptyMessage={
+              activeTab === "pending"
+                ? "Tidak ada akun yang menunggu verifikasi"
+                : "Belum ada user terdaftar"
+            }
+          />
+        )}
+      </div>
 
+      {/* Create User Modal */}
       <Modal
         open={modalOpen}
         onClose={() => setModalOpen(false)}
         title="Buat User Baru"
       >
+        {/* Error Banner — §4.12 */}
         {formGeneralError && (
-          <div className="mb-4 rounded-md border border-flame-orange/30 bg-flame-orange/10 px-3 py-2 text-caption text-flame-orange">
+          <div
+            style={{
+              marginBottom: "16px",
+              borderRadius: "6px",
+              border: "1px solid rgba(245,78,0,0.25)",
+              backgroundColor: "#fef2f2",
+              padding: "10px 14px",
+              fontSize: "13px",
+              color: "#f54e00",
+              fontFamily: "'IBM Plex Sans Variable', sans-serif",
+            }}
+          >
             {formGeneralError}
           </div>
         )}
 
-        <form onSubmit={handleCreateUser} className="flex flex-col gap-4">
+        <form
+          onSubmit={handleCreateUser}
+          style={{ display: "flex", flexDirection: "column", gap: "16px" }}
+        >
           <Input
             label="Nama Lengkap"
             value={newName}
@@ -335,7 +428,14 @@ export default function AdminUsersPage() {
             error={formErrors.role}
           />
 
-          <div className="flex justify-end gap-2 mt-2">
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "flex-end",
+              gap: "8px",
+              marginTop: "8px",
+            }}
+          >
             <Button
               variant="ghost"
               type="button"

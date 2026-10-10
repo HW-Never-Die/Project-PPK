@@ -27,7 +27,7 @@ const protectedRoutes: { prefix: string; roles: string[] }[] = [
   { prefix: "/pengguna", roles: ["pengguna"] },
   { prefix: "/petugas", roles: ["petugas"] },
   { prefix: "/admin", roles: ["admin"] },
-  { prefix: "/api/users", roles: ["admin"] },
+  { prefix: "/controller/users", roles: ["admin"] },
 ];
 
 const publicOnlyRoutes = ["/login", "/register"];
@@ -94,6 +94,6 @@ export const config = {
     "/admin/:path*",
     "/login",
     "/register",
-    "/api/users/:path*",
+    "/controller/users/:path*",
   ],
 };

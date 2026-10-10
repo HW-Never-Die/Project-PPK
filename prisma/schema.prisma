@@ -7,6 +7,88 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model User {
+  id                    Int           @id @default(autoincrement())
+  name                  String        @db.VarChar(100)
+  email                 String        @unique @db.VarChar(100)
+  password              String        @db.VarChar(255)
+  role                  UserRole      @default(pengguna)
+  status                UserStatus    @default(pending)
+  createdAt             DateTime      @default(now()) @map("created_at")
+  updatedAt             DateTime      @updatedAt @map("updated_at")
+  processedReports      Report[]      @relation("ProcessedByReports")
+  reports               Report[]      @relation("UserReports")
+  processedReservations Reservation[] @relation("ProcessedByReservations")
+  reservations          Reservation[] @relation("UserReservations")
+
+  @@map("users")
+}
+
+model Facility {
+  id           Int            @id @default(autoincrement())
+  name         String         @db.VarChar(100)
+  type         FacilityType
+  location     String         @db.VarChar(200)
+  capacity     Int?
+  description  String         @db.Text
+  status       FacilityStatus @default(active)
+  imageUrl     String?        @map("image_url") @db.VarChar(500)
+  createdAt    DateTime       @default(now()) @map("created_at")
+  updatedAt    DateTime       @updatedAt @map("updated_at")
+  reports      Report[]
+  reservations Reservation[]
+
+  @@map("facilities")
+}
+
+model Reservation {
+  id           Int               @id @default(autoincrement())
+  userId       Int               @map("user_id")
+  facilityId   Int               @map("facility_id")
+  date         DateTime          @db.Date
+  startTime    DateTime          @map("start_time") @db.Time(0)
+  endTime      DateTime          @map("end_time") @db.Time(0)
+  purpose      String            @db.Text
+  status       ReservationStatus @default(pending)
+  cancelReason String?           @map("cancel_reason") @db.Text
+  processedBy  Int?              @map("processed_by")
+  processedAt  DateTime?         @map("processed_at")
+  createdAt    DateTime          @default(now()) @map("created_at")
+  updatedAt    DateTime          @updatedAt @map("updated_at")
+  rejectReason String?           @map("reject_reason") @db.Text
+  facility     Facility          @relation(fields: [facilityId], references: [id])
+  processor    User?             @relation("ProcessedByReservations", fields: [processedBy], references: [id])
+  user         User              @relation("UserReservations", fields: [userId], references: [id])
+
+  @@index([facilityId, date, startTime, endTime, status], map: "idx_reservation_conflict")
+  @@index([userId, status], map: "idx_reservation_user")
+  @@index([processedBy], map: "reservations_processed_by_fkey")
+  @@map("reservations")
+}
+
+model Report {
+  id              Int            @id @default(autoincrement())
+  userId          Int            @map("user_id")
+  facilityId      Int            @map("facility_id")
+  category        ReportCategory
+  description     String         @db.Text
+  photoUrl        String?        @map("photo_url") @db.VarChar(500)
+  status          ReportStatus   @default(new)
+  resolutionNotes String?        @map("resolution_notes") @db.Text
+  processedBy     Int?           @map("processed_by")
+  processedAt     DateTime?      @map("processed_at")
+  createdAt       DateTime       @default(now()) @map("created_at")
+  updatedAt       DateTime       @updatedAt @map("updated_at")
+  facility        Facility       @relation(fields: [facilityId], references: [id])
+  processor       User?          @relation("ProcessedByReports", fields: [processedBy], references: [id])
+  user            User           @relation("UserReports", fields: [userId], references: [id])
+
+  @@index([facilityId, status], map: "idx_report_facility")
+  @@index([userId], map: "idx_report_user")
+  @@index([processedBy], map: "reports_processed_by_fkey")
+  @@map("reports")
+}
+
 enum UserRole {
   admin
   petugas
@@ -52,88 +134,4 @@ enum ReportStatus {
   in_progress
   resolved
   rejected
-}
-
-model User {
-  id        Int        @id @default(autoincrement())
-  name      String     @db.VarChar(100)
-  email     String     @unique @db.VarChar(100)
-  password  String     @db.VarChar(255)
-  role      UserRole   @default(pengguna)
-  status    UserStatus @default(pending)
-  createdAt DateTime   @default(now()) @map("created_at")
-  updatedAt DateTime   @updatedAt @map("updated_at")
-
-  reservations          Reservation[] @relation("UserReservations")
-  processedReservations Reservation[] @relation("ProcessedByReservations")
-  reports               Report[]      @relation("UserReports")
-  processedReports      Report[]      @relation("ProcessedByReports")
-
-  @@map("users")
-}
-
-model Facility {
-  id          Int            @id @default(autoincrement())
-  name        String         @db.VarChar(100)
-  type        FacilityType
-  location    String         @db.VarChar(200)
-  capacity    Int?
-  description String         @db.Text
-  status      FacilityStatus @default(active)
-  imageUrl    String?        @map("image_url") @db.VarChar(500)
-  createdAt   DateTime       @default(now()) @map("created_at")
-  updatedAt   DateTime       @updatedAt @map("updated_at")
-
-  reservations Reservation[]
-  reports      Report[]
-
-  @@map("facilities")
-}
-
-model Reservation {
-  id           Int               @id @default(autoincrement())
-  userId       Int               @map("user_id")
-  facilityId   Int               @map("facility_id")
-  date         DateTime          @db.Date
-  startTime    DateTime          @map("start_time") @db.Time(0)
-  endTime      DateTime          @map("end_time") @db.Time(0)
-  purpose      String            @db.Text
-  status       ReservationStatus @default(pending)
-  cancelReason String?           @map("cancel_reason") @db.Text
-  rejectReason String?           @map("reject_reason") @db.Text
-  processedBy  Int?              @map("processed_by")
-  processedAt  DateTime?         @map("processed_at")
-  createdAt    DateTime          @default(now()) @map("created_at")
-  updatedAt    DateTime          @updatedAt @map("updated_at")
-
-  user      User     @relation("UserReservations", fields: [userId], references: [id])
-  facility  Facility @relation(fields: [facilityId], references: [id])
-  processor User?    @relation("ProcessedByReservations", fields: [processedBy], references: [id])
-
-  @@index([facilityId, date, startTime, endTime, status], name: "idx_reservation_conflict")
-  @@index([userId, status], name: "idx_reservation_user")
-  @@map("reservations")
-}
-
-model Report {
-  id              Int            @id @default(autoincrement())
-  userId          Int            @map("user_id")
-  facilityId      Int            @map("facility_id")
-  category        ReportCategory
-  description     String         @db.Text
-  photoUrl        String?        @map("photo_url") @db.VarChar(500)
-  status          ReportStatus   @default(new)
-  resolutionNotes String?        @map("resolution_notes") @db.Text
-  processedBy     Int?           @map("processed_by")
-  processedAt     DateTime?      @map("processed_at")
-  createdAt       DateTime       @default(now()) @map("created_at")
-  updatedAt       DateTime       @updatedAt @map("updated_at")
-
-  user      User     @relation("UserReports", fields: [userId], references: [id])
-  facility  Facility @relation(fields: [facilityId], references: [id])
-  processor User?    @relation("ProcessedByReports", fields: [processedBy], references: [id])
-
-  @@index([facilityId, status], name: "idx_report_facility")
-  @@index([userId], name: "idx_report_user")
-  @@map("reports")
 }
