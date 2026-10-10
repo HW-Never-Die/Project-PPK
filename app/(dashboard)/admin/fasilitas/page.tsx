@@ -6,7 +6,6 @@ import {
   Plus,
   Pencil,
   Power,
-  Search,
   X,
   AlertCircle,
 } from "lucide-react";
@@ -200,7 +199,7 @@ export default function AdminFacilitiesPage() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-[#e5e7e0]">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <Building2 className="w-5 h-5 text-[#eb9d2a]" />
+            <Building2 className="w-7 h-7 text-[#eb9d2a]" />
             <h1 className="text-[22px] font-extrabold text-[#111827] tracking-[-0.5px] font-[family-name:var(--font-open-runde)]">
               Manajemen Master Fasilitas
             </h1>
@@ -223,7 +222,6 @@ export default function AdminFacilitiesPage() {
       {/* Filter Bar */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 bg-[#fdfdf8] p-3 border border-[#e5e7e0] rounded-[8px]">
         <div className="relative flex items-center">
-          <Search className="w-3.5 h-3.5 absolute left-3 text-[#65675e] pointer-events-none" />
           <input
             type="text"
             placeholder="Cari fasilitas..."
@@ -232,7 +230,7 @@ export default function AdminFacilitiesPage() {
               setLoading(true);
               setSearch(e.target.value);
             }}
-            className="w-full pl-9 pr-3 py-1.5 text-[13px] border border-[#bfc1b7] rounded-[6px] bg-white text-[#23251d] focus:outline-none focus:border-[#eb9d2a] transition-[border-color] duration-150"
+            className="w-full px-3 py-1.5 text-[13px] border border-[#bfc1b7] rounded-[6px] bg-white text-[#23251d] focus:outline-none focus:border-[#eb9d2a] transition-[border-color] duration-150"
           />
         </div>
 
